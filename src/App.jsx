@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Activity, ArrowDownRight, ArrowUpRight, Bell, Bookmark, Camera, Check, ChevronDown, CircleHelp, Compass, Flame, Heart, Home, ImagePlus, MessageCircle, MoreHorizontal, Plus, Search, Send, Settings, ShieldCheck, Sparkles, TrendingUp, UserRound, X } from 'lucide-react';
 
 const initialPosts = [
