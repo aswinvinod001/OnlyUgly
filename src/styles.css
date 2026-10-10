@@ -179,3 +179,32 @@ body:before{content:"";position:fixed;inset:-25%;z-index:-2;pointer-events:none;
  .post-card,.composer,.icon-btn,.top-avatar,.action,.sort-btn,.dock-item{transition:none!important}
  .dock-active-pill{transition:none!important}
 }
+
+/* Phase 2.1 — less chrome, more optical liquid glass */
+@keyframes dock-jelly{0%{transform:translateX(calc(var(--active-index)*100%)) scaleX(1) scaleY(1)}22%{transform:translateX(calc(var(--active-index)*100%)) scaleX(1.14) scaleY(.86)}42%{transform:translateX(calc(var(--active-index)*100%)) scaleX(.91) scaleY(1.12)}61%{transform:translateX(calc(var(--active-index)*100%)) scaleX(1.055) scaleY(.97)}78%{transform:translateX(calc(var(--active-index)*100%)) scaleX(.985) scaleY(1.025)}100%{transform:translateX(calc(var(--active-index)*100%)) scaleX(1) scaleY(1)}}
+.mobile-dock{width:min(248px,calc(100vw - 58px))!important;height:58px!important;padding:5px!important;border:0!important;border-radius:999px!important;background:rgba(130,105,166,.14)!important;backdrop-filter:blur(48px) saturate(220%)!important;-webkit-backdrop-filter:blur(48px) saturate(220%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.32),inset 0 -1px 0 rgba(255,255,255,.08),0 12px 38px rgba(0,0,0,.28),0 0 26px rgba(190,151,255,.13)!important;touch-action:pan-y}
+.mobile-dock:after{content:"";position:absolute;inset:0;border-radius:999px;pointer-events:none;background:linear-gradient(155deg,rgba(255,255,255,.1),transparent 44%,rgba(208,177,255,.04))}
+.dock-active-pill{left:5px!important;top:5px!important;width:calc((100% - 10px)/3)!important;height:48px!important;border:0!important;border-radius:999px!important;background:rgba(235,218,255,.18)!important;backdrop-filter:blur(18px) saturate(180%);-webkit-backdrop-filter:blur(18px) saturate(180%);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -1px 0 rgba(255,255,255,.07),0 0 18px rgba(200,169,255,.12)!important;transition:transform .54s var(--spring)!important;cursor:grab;touch-action:none}
+.dock-active-pill.dragging{cursor:grabbing;animation:dock-jelly .65s var(--spring) both;filter:drop-shadow(0 0 9px rgba(220,190,255,.18))}
+.dock-item{height:48px!important;border-radius:999px!important;touch-action:manipulation}
+.dock-item:active{animation:dock-jelly .55s var(--spring) both;transform-origin:center}
+.topbar{display:flex;gap:12px!important;align-items:center;background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border:0!important;box-shadow:none!important}
+.topbar:after{display:none}
+.topbar .mobile-brand{flex:0 0 auto;padding:0}
+.topbar .brand{display:flex;align-items:center;justify-content:center;width:62px;height:54px;padding:0;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:rgba(190,155,240,.12);backdrop-filter:blur(34px) saturate(200%);-webkit-backdrop-filter:blur(34px) saturate(200%);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 5px 20px rgba(0,0,0,.12)}
+.topbar .brand>span:last-child{display:none}
+.topbar .brand-mark{width:34px;height:34px;border-radius:12px;font-size:0;display:grid;place-items:center;border:1px solid rgba(255,255,255,.38);background:linear-gradient(145deg,rgba(237,219,255,.92),rgba(160,120,226,.78));position:relative}
+.topbar .brand-mark:before{content:"";position:absolute;width:16px;height:16px;border:2px solid #2b1b3e;border-radius:50%;box-shadow:inset 0 0 0 3px rgba(43,27,62,.14)}
+.topbar .brand-mark:after{content:"";position:absolute;width:8px;height:8px;border-right:2px solid #2b1b3e;border-bottom:2px solid #2b1b3e;transform:rotate(45deg) translate(3px,-3px);border-radius:1px}
+.topbar .search-wrap{flex:1;min-width:0;height:52px;border-radius:999px!important;background:rgba(155,125,190,.09)!important;backdrop-filter:blur(38px) saturate(210%)!important;-webkit-backdrop-filter:blur(38px) saturate(210%)!important;border:1px solid rgba(255,255,255,.17)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 8px 22px rgba(0,0,0,.12)!important}
+.topbar .top-actions{display:flex;align-items:center;gap:9px;flex:0 0 auto}
+.topbar .top-actions>.icon-btn{width:48px;height:48px;border-radius:999px;border:1px solid rgba(255,255,255,.15);background:rgba(190,155,240,.1);backdrop-filter:blur(32px) saturate(200%);-webkit-backdrop-filter:blur(32px) saturate(200%);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)}
+.topbar .top-actions>.icon-btn:active{transform:scale(.9)}
+.gemini-sparkle{animation:gemini-in .7s var(--spring) both,gemini-twinkle 3.4s ease-in-out .7s infinite;filter:drop-shadow(0 0 6px rgba(202,169,255,.65));transform-origin:center}
+@keyframes gemini-in{0%{opacity:0;transform:scale(.35) rotate(-35deg)}65%{opacity:1;transform:scale(1.2) rotate(8deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes gemini-twinkle{0%,100%{opacity:1;filter:drop-shadow(0 0 4px rgba(202,169,255,.42))}50%{opacity:.65;filter:drop-shadow(0 0 11px rgba(228,197,255,.95))}}
+/* Make ambient colors visible through the gaps and the surfaces. */
+body:before{opacity:1!important;filter:blur(80px)!important;background:conic-gradient(from 0deg at 50% 50%,rgba(132,80,230,.31),rgba(224,110,195,.22),rgba(70,119,237,.25),rgba(176,103,238,.28),rgba(132,80,230,.31))!important}
+.post-card,.rail-card,.promo-card,.composer,.search-wrap,.profile-hero{background:rgba(31,21,47,.30)!important;backdrop-filter:blur(34px) saturate(190%)!important;-webkit-backdrop-filter:blur(34px) saturate(190%)!important}
+@media(max-width:600px){.topbar{gap:8px!important;padding-left:14px!important;padding-right:14px!important}.topbar .brand{width:48px;height:48px}.topbar .brand-mark{width:30px;height:30px}.topbar .search-wrap{height:48px}.topbar .top-actions>.icon-btn{width:42px;height:42px}.mobile-dock{bottom:max(12px,env(safe-area-inset-bottom))!important}.dock-active-pill{height:48px!important}}
+@media(prefers-reduced-motion:reduce){.gemini-sparkle{animation:none!important}.dock-active-pill.dragging{animation:none!important}}
