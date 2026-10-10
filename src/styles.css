@@ -239,3 +239,20 @@ body:before{opacity:1!important;filter:blur(80px)!important;background:conic-gra
 .messages-note{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:11px;margin:18px 0 0}
 @media(max-width:600px){.mobile-dock{width:min(292px,calc(100vw - 48px))!important;height:52px!important;padding:3px!important}.dock-active-pill{top:3px!important;left:3px!important;width:calc((100% - 6px)/5)!important;height:46px!important}.dock-item{height:46px!important}.modal-backdrop{padding:10px 10px calc(78px + env(safe-area-inset-bottom))!important}.modal{max-height:calc(100dvh - 100px - env(safe-area-inset-bottom))!important;border-radius:24px!important}.messages-preview{padding:16px;border-radius:21px}.messages-title{flex-direction:column}.messages-title .secondary-btn{align-self:flex-start}}
 @media(prefers-reduced-motion:reduce){.profile-cover:before{animation:none!important}.dock-active-pill.dragging{animation:none!important}}
+
+/* Phase 2.3 — reliable drag, press-scale jelly, and page-based creation */
+.mobile-dock{touch-action:none!important;overflow:visible!important}
+.dock-active-pill{z-index:1!important;pointer-events:none!important;transform:translateX(calc(var(--active-index)*100%));}
+.dock-item{z-index:3!important;position:relative}
+.mobile-dock.dock-pressed .dock-active-pill{transform:translateX(calc(var(--active-index)*100%)) scale(1.075,1.13)!important;filter:drop-shadow(0 0 12px rgba(224,194,255,.3));}
+.mobile-dock.dock-pressed{cursor:grabbing}
+.dock-item:active{animation:dock-wiggle .42s cubic-bezier(.2,.8,.25,1.2) both!important}
+@keyframes dock-wiggle{0%{transform:scale(1) rotate(0)}22%{transform:scale(1.17,.9) rotate(-5deg)}45%{transform:scale(.94,1.1) rotate(4deg)}68%{transform:scale(1.05,.98) rotate(-2deg)}100%{transform:scale(1) rotate(0)}}
+.dock-active-pill.dragging{animation:dock-wiggle .42s cubic-bezier(.2,.8,.25,1.2) both!important}
+.create-page-wrap{width:100%;margin:0 0 22px;position:relative}
+.create-page-inner{width:100%;box-sizing:border-box;border:1px solid rgba(255,255,255,.09);border-radius:24px;padding:clamp(17px,3vw,28px);background:rgba(25,15,39,.13);backdrop-filter:blur(42px) saturate(190%);-webkit-backdrop-filter:blur(42px) saturate(190%);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 18px 48px rgba(0,0,0,.12)}
+.create-page-inner textarea,.create-page-inner .glass-input{background:rgba(12,8,20,.18)!important}
+.post-card,.rail-card,.promo-card,.composer,.profile-hero,.messages-preview{background:rgba(24,15,37,.16)!important;backdrop-filter:blur(40px) saturate(195%)!important;-webkit-backdrop-filter:blur(40px) saturate(195%)!important}
+.post-art{background-color:rgba(108,73,145,.18)!important}
+@media(max-width:600px){.create-page-inner{border-radius:21px;padding:17px 14px}.mobile-dock{touch-action:none!important}}
+@media(prefers-reduced-motion:reduce){.dock-item:active{animation:none!important}.mobile-dock.dock-pressed .dock-active-pill{transform:translateX(calc(var(--active-index)*100%))!important}}
