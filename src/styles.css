@@ -265,3 +265,9 @@ body:before{opacity:1!important;filter:blur(80px)!important;background:conic-gra
 .mobile-dock.dock-pressed .dock-active-pill{filter:drop-shadow(0 0 14px rgba(224,194,255,.34));}
 @keyframes dock-pill-jiggle{0%{transform:translateX(calc(var(--active-index)*100%)) scale(1) rotate(0)}18%{transform:translateX(calc(var(--active-index)*100%)) scale(1.13,.9) rotate(-3deg)}38%{transform:translateX(calc(var(--active-index)*100%)) scale(.94,1.12) rotate(2.5deg)}58%{transform:translateX(calc(var(--active-index)*100%)) scale(1.05,.97) rotate(-1.5deg)}78%{transform:translateX(calc(var(--active-index)*100%)) scale(.99,1.02) rotate(.5deg)}100%{transform:translateX(calc(var(--active-index)*100%)) scale(1) rotate(0)}}
 @media(prefers-reduced-motion:reduce){.dock-active-pill,.dock-active-pill.dragging{animation:none!important;transition:none!important}.mobile-dock.dock-pressed .dock-active-pill{transform:translateX(calc(var(--active-index)*100%))!important}}
+
+/* Drag preview follows the finger; route changes only on release */
+.dock-active-pill{transition:transform .12s linear,filter .18s ease!important;transform:translateX(calc(var(--active-index)*100%)) scale(1)!important;transform-origin:center!important}
+.mobile-dock.dock-pressed .dock-active-pill{transform:translateX(calc(var(--active-index)*100%)) scale(1.13,1.28)!important}
+.dock-active-pill.dragging{animation:dock-pill-jiggle .48s cubic-bezier(.2,.8,.25,1.15) both!important}
+@media(prefers-reduced-motion:reduce){.dock-active-pill{transition:none!important}.mobile-dock.dock-pressed .dock-active-pill{transform:translateX(calc(var(--active-index)*100%)) scale(1.04)!important}}
