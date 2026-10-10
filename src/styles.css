@@ -211,7 +211,7 @@ body:before{opacity:1!important;filter:blur(80px)!important;background:conic-gra
 
 /* Phase 2.2 — five-stop dock, modal clearance and circular profile */
 .mobile-dock{width:min(292px,calc(100vw - 56px))!important;height:54px!important;padding:4px!important;border-radius:999px!important;touch-action:pan-y;user-select:none;-webkit-user-select:none}
-.dock-active-pill{left:4px!important;top:4px!important;width:calc((100% - 8px)/5)!important;height:46px!important;border-radius:999px!important;pointer-events:none!important;will-change:transform;transition:transform .48s cubic-bezier(.2,.85,.25,1.18)!important}
+.dock-active-pill{left:4px!important;top:4px!important;width:calc((100% - 8px)/5)!important;height:46px!important;border-radius:999px!important;pointer-events:auto!important;will-change:transform;transition:transform .48s cubic-bezier(.2,.85,.25,1.18)!important}
 .dock-active-pill.dragging{animation:dock-jelly .62s cubic-bezier(.2,.85,.25,1.18) both!important;filter:drop-shadow(0 0 10px rgba(220,190,255,.28))}
 .dock-item{height:46px!important;min-width:0!important;flex:1 1 20%!important;position:relative;z-index:2;padding:0!important;border-radius:999px!important;display:grid;place-items:center}
 .dock-create{color:#f2e7ff!important}
