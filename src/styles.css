@@ -271,3 +271,10 @@ body:before{opacity:1!important;filter:blur(80px)!important;background:conic-gra
 .mobile-dock.dock-pressed .dock-active-pill{transform:translateX(calc(var(--active-index)*100%)) scale(1.13,1.28)!important}
 .dock-active-pill.dragging{animation:dock-pill-jiggle .48s cubic-bezier(.2,.8,.25,1.15) both!important}
 @media(prefers-reduced-motion:reduce){.dock-active-pill{transition:none!important}.mobile-dock.dock-pressed .dock-active-pill{transform:translateX(calc(var(--active-index)*100%)) scale(1.04)!important}}
+
+/* Native-feeling free glide: track continuous x in pixels, not snapped tab indices */
+.dock-active-pill{left:0!important;transform:translate3d(var(--drag-x,4px),0,0) scale(1)!important;transition:transform 16ms linear,filter 140ms ease!important;will-change:transform;backface-visibility:hidden}
+.mobile-dock.dock-pressed .dock-active-pill{transform:translate3d(var(--drag-x,4px),0,0) scale(1.1,1.22)!important}
+.dock-active-pill.dragging{animation:dock-pill-jiggle-free .58s cubic-bezier(.2,.75,.25,1) both!important}
+@keyframes dock-pill-jiggle-free{0%{translate:0 0;scale:1 1;rotate:0deg}16%{translate:0 -1px;scale:1.08 .94;rotate:-2deg}34%{translate:0 1px;scale:.96 1.08;rotate:1.8deg}52%{translate:0 0;scale:1.04 .98;rotate:-1deg}72%{translate:0 0;scale:.99 1.02;rotate:.4deg}100%{translate:0 0;scale:1 1;rotate:0deg}}
+@media(prefers-reduced-motion:reduce){.dock-active-pill{transition:none!important}.dock-active-pill.dragging{animation:none!important}}
