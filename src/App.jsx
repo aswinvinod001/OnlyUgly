@@ -147,7 +147,7 @@ export default function App() {
         const postRows = rows || [];
         const ids = postRows.map(p => p.id);
         const authorIds = [...new Set(postRows.map(p => p.author_id))];
-        let profiles = [], reactions = [], saved = [];
+        let profiles = [], reactions = [], saved = [], ratings = [];
         if (authorIds.length) {
           const profileResult = await supabase.from('profiles').select('id,display_name,username,bio').in('id', authorIds);
           if (profileResult.error) throw profileResult.error;
@@ -162,11 +162,16 @@ export default function App() {
             if (savedResult.error) throw savedResult.error;
             saved = savedResult.data || [];
           }
+          const ratingResult = await supabase.from('post_ratings').select('post_id,user_id,score').in('post_id', ids);
+          if (ratingResult.error) throw ratingResult.error;
+          ratings = ratingResult.data || [];
         }
         const mapped = postRows.map(p => {
           const profile = profiles.find(x => x.id === p.author_id) || {};
           const postReactions = reactions.filter(x => x.post_id === p.id);
-          return { id:p.id, dbPost:true, authorId:p.author_id, user:profile.display_name || 'unfiltered human', handle:'@'+(profile.username || 'unfiltered'), time:new Date(p.created_at).toLocaleString(), tag:p.mood || 'PURE CHAOS', title:p.caption, body:'Posted with zero filters and maximum personality.', avatar:p.vibe_emoji || p.emoji || '🫠', color:'lavender', likes:postReactions.length, comments:0, image:p.vibe_emoji || p.emoji || '🫠', imageUrl:p.image_url, imageUrls:p.image_urls || (p.image_url ? [p.image_url] : []), vibeEmoji:p.vibe_emoji, autoSwipe:p.auto_swipe !== false, gravityEngine:p.gravity_engine !== false, liked:!!authUser?.id && postReactions.some(x => x.user_id === authUser.id), saved:saved.some(x => x.post_id === p.id), rating:p.rating_enabled ? {enabled:true,question:p.rating_question || 'Rate the vibe',minLabel:p.rating_min_label,maxLabel:p.rating_max_label,average:null,count:0} : null };
+          const postRatings = ratings.filter(x => x.post_id === p.id);
+          const ratingAverage = postRatings.length ? postRatings.reduce((sum, x) => sum + x.score, 0) / postRatings.length : null;
+          return { id:p.id, dbPost:true, authorId:p.author_id, user:profile.display_name || 'unfiltered human', handle:'@'+(profile.username || 'unfiltered'), time:new Date(p.created_at).toLocaleString(), tag:p.mood || 'PURE CHAOS', title:p.caption, body:'Posted with zero filters and maximum personality.', avatar:p.vibe_emoji || p.emoji || '🫠', color:'lavender', likes:postReactions.length, comments:0, image:p.vibe_emoji || p.emoji || '🫠', imageUrl:p.image_url, imageUrls:p.image_urls || (p.image_url ? [p.image_url] : []), vibeEmoji:p.vibe_emoji, autoSwipe:p.auto_swipe !== false, gravityEngine:p.gravity_engine !== false, liked:!!authUser?.id && postReactions.some(x => x.user_id === authUser.id), saved:saved.some(x => x.post_id === p.id), myRating:postRatings.find(x => x.user_id === authUser?.id)?.score ?? 5, rating:p.rating_enabled ? {enabled:true,question:p.rating_question || 'Rate the vibe',minLabel:p.rating_min_label,maxLabel:p.rating_max_label,average:ratingAverage,count:postRatings.length} : null };
         });
         if (!cancelled) setPosts(mapped);
       } catch (err) {
