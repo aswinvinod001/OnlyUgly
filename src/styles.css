@@ -390,3 +390,48 @@ body:before{background:radial-gradient(ellipse at 16% 10%,rgba(117,54,160,.27),t
     -webkit-backdrop-filter:blur(12px) saturate(155%)!important;
   }
 }
+
+
+/* Refinement: clearer glass, white search glyph, optical edge dispersion. */
+.topbar .search-wrap>svg:first-child{color:#fff!important;stroke:#fff!important;opacity:1!important;filter:drop-shadow(0 0 3px rgba(255,255,255,.28))}
+.mobile-dock{
+ background:linear-gradient(135deg,rgba(115,45,82,.18),rgba(54,37,92,.14) 45%,rgba(22,45,89,.17))!important;
+ backdrop-filter:blur(8px) saturate(155%)!important;
+ -webkit-backdrop-filter:blur(8px) saturate(155%)!important;
+}
+.topbar .brand,.topbar .top-actions>.icon-btn{backdrop-filter:blur(7px) saturate(150%)!important;-webkit-backdrop-filter:blur(7px) saturate(150%)!important}
+.topbar .search-wrap{backdrop-filter:blur(8px) saturate(155%)!important;-webkit-backdrop-filter:blur(8px) saturate(155%)!important;background:rgba(155,125,190,.10)!important}
+.post-card,.rail-card,.promo-card,.composer,.profile-hero,.messages-preview,.create-page-inner{
+ backdrop-filter:blur(9px) saturate(150%)!important;
+ -webkit-backdrop-filter:blur(9px) saturate(150%)!important;
+ background:rgba(47,18,36,.13)!important;
+}
+.mobile-dock:before{
+ content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;
+ padding:1.2px;
+ background:linear-gradient(112deg,rgba(255,255,255,.75),rgba(180,220,255,.32) 13%,rgba(255,155,218,.42) 27%,transparent 43%,rgba(255,255,255,.22) 57%,rgba(170,155,255,.46) 72%,rgba(255,255,255,.62) 88%,rgba(255,255,255,.16));
+ -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+ -webkit-mask-composite:xor;mask-composite:exclude;
+ filter:drop-shadow(0 0 2px rgba(205,185,255,.22));
+}
+.mobile-dock:after{
+ background:linear-gradient(112deg,rgba(255,255,255,.16),rgba(180,220,255,.055) 15%,rgba(255,155,218,.07) 28%,transparent 45%,rgba(255,255,255,.04) 62%,rgba(170,155,255,.09) 76%,rgba(255,255,255,.13))!important;
+}
+.dock-active-pill{
+ background:linear-gradient(110deg,rgba(255,255,255,.19),rgba(188,219,255,.11) 22%,rgba(255,174,225,.14) 46%,rgba(205,185,255,.13) 70%,rgba(255,255,255,.12))!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.42),inset 0 -1px 0 rgba(255,255,255,.12),0 0 14px rgba(184,160,255,.10)!important;
+}
+.mobile-dock.dock-pressed .dock-active-pill{
+ scale:1.08 .88!important;
+ filter:drop-shadow(0 0 9px rgba(224,194,255,.2))!important;
+}
+@media(max-width:600px){
+ .mobile-dock{backdrop-filter:blur(7px) saturate(150%)!important;-webkit-backdrop-filter:blur(7px) saturate(150%)!important}
+ .post-card,.rail-card,.promo-card,.composer,.profile-hero,.messages-preview,.create-page-inner{backdrop-filter:blur(8px) saturate(145%)!important;-webkit-backdrop-filter:blur(8px) saturate(145%)!important}
+}
+@supports (-webkit-touch-callout:none){
+ .mobile-dock{backdrop-filter:blur(7px) saturate(150%)!important;-webkit-backdrop-filter:blur(7px) saturate(150%)!important}
+ .topbar .brand,.topbar .top-actions>.icon-btn{backdrop-filter:blur(6px) saturate(145%)!important;-webkit-backdrop-filter:blur(6px) saturate(145%)!important}
+ .topbar .search-wrap{backdrop-filter:blur(7px) saturate(150%)!important;-webkit-backdrop-filter:blur(7px) saturate(150%)!important}
+ .post-card,.rail-card,.promo-card,.composer,.profile-hero,.messages-preview,.create-page-inner{backdrop-filter:blur(8px) saturate(145%)!important;-webkit-backdrop-filter:blur(8px) saturate(145%)!important}
+}
