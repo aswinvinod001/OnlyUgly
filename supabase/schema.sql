@@ -136,14 +136,26 @@ language plpgsql
 security definer
 set search_path = ''
 as $$
+declare
+  requested_username text;
+  safe_username text;
 begin
+  requested_username := lower(coalesce(nullif(new.raw_user_meta_data ->> 'username', ''), ''));
+  if requested_username <> '' then
+    safe_username := requested_username;
+  else
+    safe_username := lower(regexp_replace(coalesce(split_part(new.email, '@', 1), 'human'), '[^a-zA-Z0-9_]', '', 'g')) || '_' || substr(new.id::text, 1, 5);
+  end if;
+
   insert into public.profiles (id, username, display_name)
   values (
     new.id,
-    lower(regexp_replace(coalesce(new.raw_user_meta_data ->> 'display_name', split_part(new.email, '@', 1)), '[^a-zA-Z0-9_]', '', 'g')) || '_' || substr(new.id::text, 1, 5),
-    coalesce(new.raw_user_meta_data ->> 'display_name', split_part(new.email, '@', 1))
+    safe_username,
+    coalesce(nullif(new.raw_user_meta_data ->> 'display_name', ''), split_part(new.email, '@', 1), 'unfiltered human')
   )
-  on conflict (id) do nothing;
+  on conflict (id) do update
+    set username = excluded.username,
+        display_name = excluded.display_name;
   return new;
 end;
 $$;
