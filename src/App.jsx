@@ -14,33 +14,67 @@ const nav = [
 
 function Brand() { return <a className="brand" href="#home" aria-label="OnlyUgly home"><img className="brand-mark-image" src="/favicon.svg" alt="" /><span>only<span className="brand-accent">ugly</span><small>UNFILTERED BY NATURE</small></span></a>; }
 
-function AuthPanel({ onClose, user, onAuthChange }) {
+function AuthPanel({ onAuthChange }) {
   const [mode, setMode] = useState('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
+  const [username, setUsername] = useState('');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
   const submit = async e => {
     e.preventDefault();
-    if (!isSupabaseConfigured) { setMessage('Supabase is not connected yet. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Vercel and your local .env file.'); return; }
+    if (!isSupabaseConfigured) { setMessage('Supabase connection is not ready. Check the Vercel environment variables.'); return; }
+    if (mode === 'signup' && password !== confirmPassword) { setMessage('Those passwords do not match.'); return; }
+    if (mode === 'signup' && !/^[a-zA-Z0-9_]{3,20}$/.test(username)) { setMessage('Username must be 3–20 characters: letters, numbers, or underscores.'); return; }
     setBusy(true); setMessage('');
     try {
       if (mode === 'signup') {
-        const { data, error } = await supabase.auth.signUp({ email, password, options: { data: { display_name: displayName.trim() || email.split('@')[0] } } });
+        const { data, error } = await supabase.auth.signUp({ email: email.trim(), password, options: { data: { display_name: displayName.trim(), username: username.trim().toLowerCase() }, emailRedirectTo: window.location.origin } });
         if (error) throw error;
-        if (data.session) { onAuthChange(data.session.user); onClose(); }
+        if (data.session) onAuthChange(data.session.user);
         else setMessage('Account created! Check your email to confirm it, then sign in.');
       } else {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
         if (error) throw error;
-        onAuthChange(data.user); onClose();
+        onAuthChange(data.user);
       }
     } catch (err) { setMessage(err.message || 'Authentication failed. Please try again.'); }
     finally { setBusy(false); }
   };
-  const signOut = async () => { const { error } = await supabase.auth.signOut(); if (error) setMessage(error.message); else { onAuthChange(null); onClose(); } };
-  return <div className="modal-backdrop" onMouseDown={e => e.target === e.currentTarget && onClose()}><section className="modal auth-modal" role="dialog" aria-modal="true" aria-labelledby="auth-title"><div className="modal-head"><div><span className="eyebrow"><ShieldCheck size={14}/> YOUR ACCOUNT</span><h2 id="auth-title">{user ? 'You’re signed in.' : mode === 'signin' ? 'Welcome back.' : 'Join the chaos.'}</h2></div><button className="icon-btn" onClick={onClose} aria-label="Close"><X size={19}/></button></div>{user ? <><p className="muted">Signed in as <strong>{user.email}</strong>.</p><button className="primary-btn publish-btn" onClick={signOut}>Sign out</button></> : <><p className="muted">Create an account to start building your OnlyUgly identity.</p><form onSubmit={submit}>{mode === 'signup' && <><label className="field-label" htmlFor="auth-name">Display name</label><input id="auth-name" className="glass-input" autoComplete="nickname" value={displayName} onChange={e => setDisplayName(e.target.value)} placeholder="Your alter ego"/></>}<label className="field-label" htmlFor="auth-email">Email</label><input id="auth-email" className="glass-input" type="email" autoComplete="email" required value={email} onChange={e => setEmail(e.target.value)} placeholder="you@example.com"/><label className="field-label" htmlFor="auth-password">Password</label><input id="auth-password" className="glass-input" type="password" autoComplete={mode === 'signin' ? 'current-password' : 'new-password'} minLength={6} required value={password} onChange={e => setPassword(e.target.value)} placeholder="At least 6 characters"/>{message && <p className="auth-message" role="status">{message}</p>}<button className="primary-btn publish-btn" type="submit" disabled={busy}>{busy ? 'Please wait…' : mode === 'signin' ? 'Sign in' : 'Create account'}</button></form><button className="auth-switch" onClick={() => {setMode(mode === 'signin' ? 'signup' : 'signin');setMessage('');}}>{mode === 'signin' ? 'New here? Create an account' : 'Already have an account? Sign in'}</button>{!isSupabaseConfigured && <p className="tiny-note">Preview mode is available, but authentication activates after Supabase setup.</p>}</>}</section></div>;
+  const oauth = async provider => {
+    if (!isSupabaseConfigured) { setMessage('Supabase is not connected yet.'); return; }
+    setBusy(true); setMessage('');
+    const { error } = await supabase.auth.signInWithOAuth({ provider, options: { redirectTo: window.location.origin } });
+    if (error) { setMessage(error.message || provider + ' sign-in could not start.'); setBusy(false); }
+  };
+  return <main className="auth-screen">
+    <div className="auth-aurora aurora-one"/><div className="auth-aurora aurora-two"/><div className="auth-aurora aurora-three"/>
+    <div className="auth-stars" aria-hidden="true">{Array.from({length:22},(_,i)=><i key={i} style={{'--i':i}}/>)}</div>
+    <section className="auth-showcase">
+      <div className="auth-brand-lockup"><img src="/favicon.svg" alt="OnlyUgly logo"/><div className="auth-brand-word">only<span>ugly</span></div><small>UNFILTERED BY NATURE</small></div>
+      <div className="auth-manifesto"><span className="auth-overline"><Sparkles size={15}/> YOUR PEOPLE. YOUR CHAOS.</span><h1>Perfect is<br/><span>overrated.</span></h1><p>A home for the moments that make you human. No pressure to be polished. Just be you.</p>
+        <div className="auth-orbit orbit-a"/><div className="auth-orbit orbit-b"/><div className="auth-orbit orbit-c"/><div className="auth-floating-chip chip-a">✦ 100% unfiltered</div><div className="auth-floating-chip chip-b">no judgement zone</div>
+      </div><div className="auth-footnote"><span className="auth-live-dot"/> A little less perfect. A lot more real.</div>
+    </section>
+    <section className="auth-card" aria-labelledby="auth-title"><div className="auth-card-top"><span className="auth-mini-logo">OU</span><span className="auth-step">{mode === 'signin' ? 'WELCOME BACK' : 'YOUR NEXT CHAPTER'}</span></div>
+      <h2 id="auth-title">{mode === 'signin' ? 'Enter your world.' : 'Find your people.'}</h2><p className="auth-card-sub">{mode === 'signin' ? 'Your unfiltered corner is waiting.' : 'Make an account. Bring your whole self.'}</p>
+      <div className="auth-mode-tabs"><button type="button" className={mode === 'signin' ? 'selected' : ''} onClick={()=>{setMode('signin');setMessage('')}}>Log in</button><button type="button" className={mode === 'signup' ? 'selected' : ''} onClick={()=>{setMode('signup');setMessage('')}}>Create account</button></div>
+      <form onSubmit={submit} className="auth-form">
+        {mode === 'signup' && <><label className="field-label" htmlFor="auth-display-name">Display name</label><input id="auth-display-name" className="glass-input" autoComplete="name" required minLength={2} maxLength={40} value={displayName} onChange={e=>setDisplayName(e.target.value)} placeholder="What should people call you?"/><label className="field-label" htmlFor="auth-username">Username</label><input id="auth-username" className="glass-input" autoComplete="username" required minLength={3} maxLength={20} pattern="[A-Za-z0-9_]+" value={username} onChange={e=>setUsername(e.target.value.replace(/\s/g,''))} placeholder="your_unique_name"/><small className="auth-help">3–20 letters, numbers or underscores</small></>}
+        <label className="field-label" htmlFor="auth-email">Email address</label><input id="auth-email" className="glass-input" type="email" autoComplete="email" required value={email} onChange={e=>setEmail(e.target.value)} placeholder="you@example.com"/>
+        <label className="field-label" htmlFor="auth-password">Password</label><input id="auth-password" className="glass-input" type="password" autoComplete={mode === 'signin' ? 'current-password' : 'new-password'} minLength={6} required value={password} onChange={e=>setPassword(e.target.value)} placeholder="At least 6 characters"/>
+        {mode === 'signup' && <><label className="field-label" htmlFor="auth-confirm-password">Confirm password</label><input id="auth-confirm-password" className="glass-input" type="password" autoComplete="new-password" minLength={6} required value={confirmPassword} onChange={e=>setConfirmPassword(e.target.value)} placeholder="Type it again"/></>}
+        {message && <p className="auth-message" role="status">{message}</p>}
+        <button className="primary-btn auth-submit" type="submit" disabled={busy}>{busy ? 'One sec…' : mode === 'signin' ? 'Log in to OnlyUgly' : 'Create my account'} <ArrowUpRight size={17}/></button>
+      </form>
+      <div className="auth-divider"><span/>or continue with<span/></div>
+      <div className="oauth-buttons"><button type="button" onClick={()=>oauth('google')} disabled={busy}><b className="google-g">G</b> Google</button><button type="button" onClick={()=>oauth('apple')} disabled={busy}><b className="apple-mark">●</b> Apple</button></div>
+      <p className="auth-legal">Keep OnlyUgly a kind place. Laugh with people, never at them.</p>
+      {!isSupabaseConfigured && <p className="auth-message">Supabase connection is missing. Check the Vercel environment variables.</p>}
+    </section>
+  </main>;
 }
 
 function Avatar({ emoji, color = 'lavender', size = '' }) { return <div className={`avatar ${color} ${size}`}>{emoji}</div>; }
