@@ -11,7 +11,7 @@ const nav = [
   { label: 'Home', icon: Home }, { label: 'Trending', icon: TrendingUp }, { label: 'Create', icon: Plus }, { label: 'Messages', icon: MessageCircle }, { label: 'Profile', icon: UserRound },
 ];
 
-function Brand() { return <a className="brand" href="#home" aria-label="OnlyUgly home"><span className="brand-mark">O<span>U</span></span><span>only<span className="brand-accent">ugly</span><small>UNFILTERED BY NATURE</small></span></a>; }
+function Brand() { return <a className="brand" href="#home" aria-label="OnlyUgly home"><img className="brand-mark-image" src="/favicon.svg" alt="" /><span>only<span className="brand-accent">ugly</span><small>UNFILTERED BY NATURE</small></span></a>; }
 
 function Avatar({ emoji, color = 'lavender', size = '' }) { return <div className={`avatar ${color} ${size}`}>{emoji}</div>; }
 
