@@ -1,1 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#f3ddff"/><stop offset=".52" stop-color="#c19bff"/><stop offset="1" stop-color="#8b62d4"/></linearGradient><linearGradient id="h" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fff" stop-opacity=".65"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs><rect width="64" height="64" rx="20" fill="url(#g)"/><path d="M0 20Q0 0 20 0H44Q64 0 64 20V27Q32 15 0 29Z" fill="url(#h)"/><path d="M32 14a18 18 0 1 0 18 18h-8a10 10 0 1 1-10-10z" fill="#29183d"/><path d="M32 27h18a18 18 0 0 1-18 18v-8a10 10 0 0 0 9-10z" fill="#29183d"/><circle cx="47" cy="47" r="3" fill="#fff" fill-opacity=".9"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="ou" x1="8" y1="10" x2="58" y2="54" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#31d8ff"/>
+      <stop offset=".22" stop-color="#674bff"/>
+      <stop offset=".48" stop-color="#e82aff"/>
+      <stop offset=".7" stop-color="#ff286e"/>
+      <stop offset="1" stop-color="#4c72ff"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="10" y1="8" x2="35" y2="36" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff" stop-opacity=".95"/>
+      <stop offset=".45" stop-color="#fff" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow" x="-25%" y="-25%" width="150%" height="150%">
+      <feGaussianBlur stdDeviation="1.1"/>
+    </filter>
+  </defs>
+  <path d="M25.8 17.5a14.5 14.5 0 1 0 0 29c7.2 0 12.8-5.3 14.3-11.2 1.6 6.7 5.6 11.2 12.1 11.2V18.4"
+        fill="none" stroke="url(#ou)" stroke-width="10.5" stroke-linecap="round" stroke-linejoin="round" opacity=".45" filter="url(#glow)"/>
+  <path d="M25.8 17.5a14.5 14.5 0 1 0 0 29c7.2 0 12.8-5.3 14.3-11.2 1.6 6.7 5.6 11.2 12.1 11.2V18.4"
+        fill="none" stroke="url(#ou)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M25.8 17.5a14.5 14.5 0 1 0 0 29c7.2 0 12.8-5.3 14.3-11.2 1.6 6.7 5.6 11.2 12.1 11.2V18.4"
+        fill="none" stroke="url(#shine)" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+</svg>
