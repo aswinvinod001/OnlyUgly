@@ -323,3 +323,70 @@ body:before{background:radial-gradient(ellipse at 16% 10%,rgba(117,54,160,.27),t
 .mobile-dock:after{background:linear-gradient(135deg,rgba(255,255,255,.12),rgba(118,28,56,.12) 36%,transparent 63%,rgba(60,94,180,.1))!important}
 .dock-active-pill{background:linear-gradient(135deg,rgba(235,215,255,.22),rgba(242,170,211,.12) 52%,rgba(143,165,255,.12))!important}
 @media(prefers-reduced-motion:reduce){.dock-active-pill.dragging{animation:none!important}}
+
+
+/* OnlyUgly polish: position-independent jelly press + lighter, clearer glass */
+.dock-active-pill{
+  transform-origin:center!important;
+  transition:transform 16ms linear,filter 180ms ease,scale 220ms cubic-bezier(.2,.8,.2,1),rotate 220ms ease!important;
+  scale:1 1;
+  rotate:0deg;
+}
+.mobile-dock.dock-pressed .dock-active-pill{
+  scale:1.12 .80!important;
+  rotate:0deg!important;
+  filter:drop-shadow(0 0 10px rgba(224,194,255,.24))!important;
+}
+/* Keep the jelly animation local to the pill; never animate its X position. */
+.dock-active-pill.dragging{animation:dock-squish-jelly .48s cubic-bezier(.2,.8,.25,1.15) both!important}
+@keyframes dock-squish-jelly{
+  0%{scale:1 1;rotate:0deg}
+  22%{scale:1.10 .82;rotate:0deg}
+  45%{scale:.96 1.08;rotate:0deg}
+  68%{scale:1.035 .96;rotate:0deg}
+  100%{scale:1 1;rotate:0deg}
+}
+@media(prefers-reduced-motion:reduce){
+  .dock-active-pill,.dock-active-pill.dragging{animation:none!important;transition:none!important}
+  .mobile-dock.dock-pressed .dock-active-pill{scale:1.02 .96!important}
+}
+/* Reduce blur so the tint and background remain visible on iPhone Safari. */
+.mobile-dock{
+  background:linear-gradient(135deg,rgba(115,45,82,.28),rgba(54,37,92,.24) 45%,rgba(22,45,89,.27))!important;
+  backdrop-filter:blur(14px) saturate(165%)!important;
+  -webkit-backdrop-filter:blur(14px) saturate(165%)!important;
+  border-color:rgba(255,255,255,.25)!important;
+}
+.topbar .brand,.topbar .top-actions>.icon-btn{
+  backdrop-filter:blur(12px) saturate(165%)!important;
+  -webkit-backdrop-filter:blur(12px) saturate(165%)!important;
+  background:rgba(150,115,190,.16)!important;
+}
+.topbar .search-wrap{
+  backdrop-filter:blur(14px) saturate(170%)!important;
+  -webkit-backdrop-filter:blur(14px) saturate(170%)!important;
+  background:rgba(155,125,190,.14)!important;
+}
+.post-card,.rail-card,.promo-card,.composer,.profile-hero,.messages-preview,.create-page-inner{
+  backdrop-filter:blur(16px) saturate(160%)!important;
+  -webkit-backdrop-filter:blur(16px) saturate(160%)!important;
+}
+@media(max-width:600px){
+  .mobile-dock{backdrop-filter:blur(12px) saturate(165%)!important;-webkit-backdrop-filter:blur(12px) saturate(165%)!important}
+  .topbar .search-wrap{backdrop-filter:blur(10px) saturate(165%)!important;-webkit-backdrop-filter:blur(10px) saturate(165%)!important}
+  .post-card,.rail-card,.promo-card,.composer,.profile-hero,.messages-preview,.create-page-inner{
+    backdrop-filter:blur(12px) saturate(155%)!important;
+    -webkit-backdrop-filter:blur(12px) saturate(155%)!important;
+    background:rgba(47,18,36,.19)!important;
+  }
+}
+/* Override the old iOS-only high-blur rules above. */
+@supports (-webkit-touch-callout:none){
+  .mobile-dock{backdrop-filter:blur(12px) saturate(165%)!important;-webkit-backdrop-filter:blur(12px) saturate(165%)!important}
+  .topbar .brand,.topbar .top-actions>.icon-btn{backdrop-filter:blur(10px) saturate(160%)!important;-webkit-backdrop-filter:blur(10px) saturate(160%)!important}
+  .topbar .search-wrap{backdrop-filter:blur(10px) saturate(160%)!important;-webkit-backdrop-filter:blur(10px) saturate(160%)!important}
+  .post-card,.rail-card,.promo-card,.composer,.profile-hero,.messages-preview,.create-page-inner{
+    backdrop-filter:blur(12px) saturate(155%)!important;
+    -webkit-backdrop-filter:blur(12px) saturate(155%)!important;
+  }
+}
