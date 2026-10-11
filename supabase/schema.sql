@@ -184,3 +184,68 @@ for each row execute procedure public.handle_new_user();
 -- This trigger function is only for the auth trigger, never a public RPC.
 revoke execute on function public.handle_new_user() from public, anon, authenticated;
 grant execute on function public.handle_new_user() to postgres;
+
+
+-- Post composer upgrade (also applied by migration fix_signup_and_expand_onlyugly_posts).
+alter table public.posts add column if not exists image_urls text[] not null default '{}';
+alter table public.posts add column if not exists auto_swipe boolean not null default true;
+alter table public.posts add column if not exists vibe_emoji text;
+alter table public.posts add column if not exists rating_enabled boolean not null default false;
+alter table public.posts add column if not exists rating_question text;
+alter table public.posts add column if not exists rating_min_label text default 'Not at all';
+alter table public.posts add column if not exists rating_max_label text default 'Absolutely';
+alter table public.posts add column if not exists gravity_engine boolean not null default true;
+update public.posts set image_urls = array[image_url] where image_url is not null and cardinality(image_urls) = 0;
+
+create table if not exists public.post_ratings (
+  post_id uuid not null references public.posts(id) on delete cascade,
+  user_id uuid not null references public.profiles(id) on delete cascade,
+  score integer not null check (score between 0 and 10),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+  primary key (post_id, user_id)
+);
+alter table public.post_ratings enable row level security;
+drop policy if exists "Post ratings are public" on public.post_ratings;
+create policy "Post ratings are public" on public.post_ratings for select using (true);
+drop policy if exists "Users submit their own post ratings" on public.post_ratings;
+create policy "Users submit their own post ratings" on public.post_ratings for insert to authenticated with check (auth.uid() = user_id);
+drop policy if exists "Users update their own post ratings" on public.post_ratings;
+create policy "Users update their own post ratings" on public.post_ratings for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+drop policy if exists "Users remove their own post ratings" on public.post_ratings;
+create policy "Users remove their own post ratings" on public.post_ratings for delete to authenticated using (auth.uid() = user_id);
+
+insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+values ('onlyugly-posts', 'onlyugly-posts', true, 10485760, array['image/jpeg','image/png','image/webp','image/gif','image/avif'])
+on conflict (id) do update set public = true, file_size_limit = 10485760, allowed_mime_types = array['image/jpeg','image/png','image/webp','image/gif','image/avif'];
+drop policy if exists "OnlyUgly images are publicly viewable" on storage.objects;
+create policy "OnlyUgly images are publicly viewable" on storage.objects for select using (bucket_id = 'onlyugly-posts');
+drop policy if exists "Users upload OnlyUgly post images to their folder" on storage.objects;
+create policy "Users upload OnlyUgly post images to their folder" on storage.objects for insert to authenticated with check (bucket_id = 'onlyugly-posts' and (storage.foldername(name))[1] = auth.uid()::text);
+drop policy if exists "Users update their own OnlyUgly images" on storage.objects;
+create policy "Users update their own OnlyUgly images" on storage.objects for update to authenticated using (bucket_id = 'onlyugly-posts' and (storage.foldername(name))[1] = auth.uid()::text) with check (bucket_id = 'onlyugly-posts' and (storage.foldername(name))[1] = auth.uid()::text);
+drop policy if exists "Users delete their own OnlyUgly images" on storage.objects;
+create policy "Users delete their own OnlyUgly images" on storage.objects for delete to authenticated using (bucket_id = 'onlyugly-posts' and (storage.foldername(name))[1] = auth.uid()::text);
+
+-- Collision-safe username assignment for new accounts.
+create or replace function public.handle_new_user()
+returns trigger language plpgsql security definer set search_path = '' as $$
+declare requested_username text; safe_username text; base_username text;
+begin
+  requested_username := lower(coalesce(nullif(new.raw_user_meta_data ->> 'username', ''), ''));
+  if requested_username = '' then
+    requested_username := lower(regexp_replace(coalesce(split_part(new.email, '@', 1), 'human'), '[^a-zA-Z0-9_]', '', 'g'));
+  end if;
+  base_username := left(coalesce(nullif(requested_username, ''), 'human'), 14);
+  safe_username := base_username;
+  if exists (select 1 from public.profiles p where p.username = safe_username and p.id <> new.id) then
+    safe_username := base_username || '_' || substr(replace(new.id::text, '-', ''), 1, 5);
+  end if;
+  insert into public.profiles (id, username, display_name)
+  values (new.id, safe_username, coalesce(nullif(new.raw_user_meta_data ->> 'display_name', ''), nullif(split_part(new.email, '@', 1), ''), 'unfiltered human'))
+  on conflict (id) do update set username = excluded.username, display_name = excluded.display_name;
+  return new;
+end;
+$$;
+revoke execute on function public.handle_new_user() from public, anon, authenticated;
+grant execute on function public.handle_new_user() to postgres;
