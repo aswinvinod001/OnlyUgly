@@ -113,7 +113,7 @@ export default function App() {
   const [profileUsername, setProfileUsername] = useState('');
   const [profileBio, setProfileBio] = useState('');
   useEffect(() => { if (!isSupabaseConfigured) return; supabase.auth.getSession().then(({data}) => setAuthUser(data.session?.user ?? null)); const {data:{subscription}} = supabase.auth.onAuthStateChange((_event, session) => setAuthUser(session?.user ?? null)); return () => subscription.unsubscribe(); }, []);
-  const [posts, setPosts] = useState(initialPosts);
+  const [posts, setPosts] = useState([]);
   const [feedLoading, setFeedLoading] = useState(false);
   const [activeNav, setActiveNav] = useState('Home');
   const [showCreate, setShowCreate] = useState(false);
@@ -157,7 +157,7 @@ export default function App() {
           const postReactions = reactions.filter(x => x.post_id === p.id);
           return { id:p.id, dbPost:true, authorId:p.author_id, user:profile.display_name || 'unfiltered human', handle:'@'+(profile.username || 'unfiltered'), time:new Date(p.created_at).toLocaleString(), tag:p.mood || 'PURE CHAOS', title:p.caption, body:'Posted with zero filters and maximum personality.', avatar:p.emoji || '🫠', color:'lavender', likes:postReactions.length, comments:0, image:p.emoji || '🫠', imageUrl:p.image_url, liked:!!authUser?.id && postReactions.some(x => x.user_id === authUser.id), saved:saved.some(x => x.post_id === p.id), rating:null };
         });
-        if (!cancelled) setPosts([...mapped, ...initialPosts]);
+        if (!cancelled) setPosts(mapped);
       } catch (err) {
         console.error('OnlyUgly feed could not load:', err);
         if (!cancelled) notify('Live feed error: ' + (err.message || 'please check Supabase permissions'));
