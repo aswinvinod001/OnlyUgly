@@ -71,6 +71,7 @@ function CreateModal({ onClose, onPost, inline = false }) {
 
 export default function App() {\n  const [authUser, setAuthUser] = useState(null);\n  const [showAuth, setShowAuth] = useState(false);\n  useEffect(() => { if (!isSupabaseConfigured) return; supabase.auth.getSession().then(({data}) => setAuthUser(data.session?.user ?? null)); const {data:{subscription}} = supabase.auth.onAuthStateChange((_event, session) => setAuthUser(session?.user ?? null)); return () => subscription.unsubscribe(); }, []);
   const [posts, setPosts] = useState(initialPosts);
+  const [feedLoading, setFeedLoading] = useState(false);
   const [activeNav, setActiveNav] = useState('Home');
   const [showCreate, setShowCreate] = useState(false);
   const [showGuidelines, setShowGuidelines] = useState(false);
@@ -81,6 +82,39 @@ export default function App() {\n  const [authUser, setAuthUser] = useState(null
   const [dockPressed, setDockPressed] = useState(false);
   const [dockTargetIndex, setDockTargetIndex] = useState(0);
   const [dockOffset, setDockOffset] = useState(0);
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+    let cancelled = false;
+    const loadFeed = async () => {
+      setFeedLoading(true);
+      try {
+        const { data: rows, error } = await supabase.from('posts').select('id,author_id,caption,mood,emoji,image_url,created_at,profiles(display_name,username)').order('created_at', { ascending: false }).limit(50);
+        if (error) throw error;
+        const userId = authUser?.id;
+        let reactions = [], saved = [];
+        if (rows?.length) {
+          const ids = rows.map(p => p.id);
+          const reactionResult = await supabase.from('reactions').select('post_id,user_id').in('post_id', ids);
+          if (!reactionResult.error) reactions = reactionResult.data || [];
+          if (userId) {
+            const savedResult = await supabase.from('saved_posts').select('post_id').eq('user_id', userId).in('post_id', ids);
+            if (!savedResult.error) saved = savedResult.data || [];
+          }
+          const mapped = rows.map(p => {
+            const profile = p.profiles || {};
+            const postReactions = reactions.filter(r => r.post_id === p.id);
+            return { id:p.id, dbPost:true, authorId:p.author_id, user:profile.display_name || 'unfiltered human', handle:'@'+(profile.username || 'unfiltered'), time:new Date(p.created_at).toLocaleString(), tag:p.mood || 'PURE CHAOS', title:p.caption, body:'Posted with zero filters and maximum personality.', avatar:p.emoji || '🫠', color:'lavender', likes:postReactions.length, comments:0, image:p.image_url ? null : (p.emoji || '🫠'), imageUrl:p.image_url, liked:!!userId && postReactions.some(r => r.user_id === userId), saved:saved.some(s => s.post_id === p.id), rating:null };
+          });
+          if (!cancelled) setPosts([...mapped, ...initialPosts]);
+        } else if (!cancelled) setPosts(initialPosts);
+      } catch (err) {
+        console.error('OnlyUgly feed could not load:', err);
+        if (!cancelled) notify('Could not load the live feed. Check your Supabase settings.');
+      } finally { if (!cancelled) setFeedLoading(false); }
+    };
+    loadFeed();
+    return () => { cancelled = true; };
+  }, [authUser?.id]);
   const savedCount = posts.filter(p => p.saved).length;
   const visiblePosts = useMemo(() => posts.filter(p => {
     const matches = `${p.user} ${p.title} ${p.body} ${p.tag}`.toLowerCase().includes(query.toLowerCase());
@@ -91,8 +125,38 @@ export default function App() {\n  const [authUser, setAuthUser] = useState(null
     return matches;
   }), [posts, query, activeNav]);
   const notify = message => { setToast(message); window.setTimeout(() => setToast(''), 2400); };
-  const togglePost = (id, field) => setPosts(current => current.map(p => p.id === id ? { ...p, [field]: !p[field], ...(field === 'liked' ? { likes: p.likes + (p.liked ? -1 : 1) } : {}) } : p));
-  const addPost = ({ caption, mood, emoji, rating }) => { setPosts(current => [{ id: Date.now(), user: 'you', handle: '@you_unfiltered', time: 'just now', tag: mood, title: caption, body: 'Posted with zero filters and maximum personality.', avatar: emoji, color: 'lavender', likes: 0, comments: 0, image: emoji, rating, liked: false, saved: false }, ...current]); setActiveNav('Home'); setQuery(''); notify(rating?.enabled ? 'Your moment and slider are in the preview!' : 'Your moment is in the preview!'); };
+  const togglePost = async (id, field) => {
+    const post = posts.find(p => p.id === id);
+    if (!post) return;
+    if (post.dbPost) {
+      if (!authUser) { setShowAuth(true); notify('Sign in to react or save posts.'); return; }
+      const table = field === 'liked' ? 'reactions' : 'saved_posts';
+      const key = field === 'liked' ? 'user_id' : 'user_id';
+      const wasOn = post[field];
+      setPosts(current => current.map(p => p.id === id ? { ...p, [field]: !wasOn, ...(field === 'liked' ? { likes:p.likes + (wasOn ? -1 : 1) } : {}) } : p));
+      const result = wasOn
+        ? await supabase.from(table).delete().eq('post_id', id).eq(key, authUser.id)
+        : await supabase.from(table).insert({ post_id:id, [key]:authUser.id });
+      if (result.error) {
+        setPosts(current => current.map(p => p.id === id ? { ...p, [field]:wasOn, ...(field === 'liked' ? { likes:p.likes + (wasOn ? 1 : -1) } : {}) } : p));
+        notify('Could not update that post. Please try again.');
+      }
+      return;
+    }
+    setPosts(current => current.map(p => p.id === id ? { ...p, [field]: !p[field], ...(field === 'liked' ? { likes: p.likes + (p.liked ? -1 : 1) } : {}) } : p));
+  };
+  const addPost = async ({ caption, mood, emoji, rating }) => {
+    if (!authUser) { setShowAuth(true); notify('Sign in to publish a real post.'); return; }
+    if (isSupabaseConfigured) {
+      const { data, error } = await supabase.from('posts').insert({ author_id:authUser.id, caption, mood, emoji }).select('id,author_id,caption,mood,emoji,image_url,created_at,profiles(display_name,username)').single();
+      if (error) { notify(error.message || 'Could not publish. Please try again.'); return; }
+      const p = data;
+      setPosts(current => [{ id:p.id, dbPost:true, authorId:p.author_id, user:p.profiles?.display_name || authUser.user_metadata?.display_name || 'you', handle:'@'+(p.profiles?.username || 'you_unfiltered'), time:'just now', tag:p.mood, title:p.caption, body:'Posted with zero filters and maximum personality.', avatar:p.emoji || emoji, color:'lavender', likes:0, comments:0, image:p.emoji || emoji, liked:false, saved:false, rating:null }, ...current]);
+      setActiveNav('Home'); setQuery(''); notify('Your moment is live!'); return;
+    }
+    setPosts(current => [{ id: Date.now(), user: 'you', handle: '@you_unfiltered', time: 'just now', tag: mood, title: caption, body: 'Posted with zero filters and maximum personality.', avatar: emoji, color: 'lavender', likes: 0, comments: 0, image: emoji, rating, liked: false, saved: false }, ...current]);
+    setActiveNav('Home'); setQuery(''); notify('Your moment is in the preview!');
+  };
 
   return <div className="app-shell" id="home"><div className="ambient-sparkles" aria-hidden="true">{Array.from({length: 8}, (_, i) => <span key={i}/>)}</div>
     <aside className="sidebar"><Brand/><button className="mobile-search icon-btn" aria-label="Search"><Search/></button><div className="sidebar-profile"><Avatar emoji="🧌" color="lavender"/><div><strong>your alter ego</strong><span>@you_unfiltered</span></div><ChevronDown size={16}/></div><div className="side-label">YOUR SPACE</div><nav className="main-nav">{nav.map(({label, icon: Icon}) => <button key={label} aria-label={label} title={label} className={activeNav === label ? 'nav-item active' : 'nav-item'} onClick={() => setActiveNav(label)}><Icon size={19}/><span>{label}</span></button>)}</nav><button className="primary-btn side-create" onClick={() => { setShowCreate(false); setActiveNav("Create"); }}><Plus size={18}/> Create a post</button><div className="side-bottom"><button className="nav-item" onClick={() => setShowGuidelines(true)}><ShieldCheck size={19}/><span>Community guidelines</span></button><button className="nav-item" onClick={() => notify('Settings are coming soon.')}><Settings size={19}/><span>Settings</span></button><div className="side-foot"><span className="online-dot"/> ALL FILTERS OFF <span>v0.1 preview</span></div></div></aside>
@@ -100,7 +164,7 @@ export default function App() {\n  const [authUser, setAuthUser] = useState(null
       <div className="content-grid"><section className="feed-column"><div className="welcome-row"><div><div className="eyebrow"><Sparkles className="gemini-sparkle" size={16}/> YOUR DAILY DOSE OF REAL</div><h1>{activeNav === 'Saved' ? 'Your saved chaos.' : activeNav === 'Trending' ? 'The chaos is trending.' : activeNav === 'Profile' ? 'Your unfiltered era.' : <>It's giving <span>unfiltered.</span></>}</h1><p>{activeNav === 'Saved' ? 'Moments you wanted to keep close.' : activeNav === 'Profile' ? 'Your moments, your little corner of chaos.' : 'No perfect angles. No pretending. Just moments.'}</p></div><div className="date-pill"><span className="date-dot"/> THE INTERNET, UNFILTERED</div></div>
       {activeNav !== 'Trending' && activeNav !== 'Saved' && activeNav !== 'Messages' && activeNav !== 'Create' && <button className="composer" onClick={() => setShowCreate(true)}><Avatar emoji="🧌" color="lavender"/><span>What's your most unfiltered moment?</span><span className="composer-add"><ImagePlus size={17}/></span><span className="composer-cta">Post it <ArrowUpRight size={15}/></span></button>}
       <div className="feed-heading"><div><h2>{activeNav === 'Saved' ? 'Saved moments' : activeNav === 'Trending' ? 'Trending now' : activeNav === 'Profile' ? 'Your posts' : 'The unfiltered feed'} <span className="live-pill"><i/> LIVE</span></h2><p>Real people. Ridiculous moments. Zero judgement.</p></div><button className="sort-btn" onClick={() => notify('Showing the latest preview posts.')}>Latest <ChevronDown size={15}/></button></div>
-      {activeNav === 'Create' && <CreateModal inline onClose={() => setActiveNav('Home')} onPost={addPost}/>}{activeNav === 'Create' && <CreateModal inline onClose={() => setActiveNav('Home')} onPost={addPost}/ >}{activeNav === 'Messages' && <section className="messages-preview"><div className="messages-title"><div><span className="eyebrow"><MessageCircle size={15}/> PRIVATE SIDE QUEST</span><h2>Your messages.</h2><p>Unexpected plot twists, delivered privately.</p></div></div><div className="message-search"><Search size={17}/><span>Search conversations</span></div>{[{emoji:'🍞',name:'toast.exe',handle:'@toast.exe',message:'PLEASE tell me that was not my camera roll 😭',time:'2m',unread:true},{emoji:'👾',name:'pixelgremlin',handle:'@pixelgremlin',message:'sent you the most cursed meme',time:'18m',unread:true},{emoji:'🧌',name:'milo.jpg',handle:'@milo_unfiltered',message:'the front camera incident stays between us',time:'1h',unread:false}].map((m,i)=><button className="conversation-row" key={m.handle} onClick={() => notify(`Opening the ${m.name} conversation preview.`)}><Avatar emoji={m.emoji} color={i===0?'pink':i===1?'blue':'lavender'}/><span className="conversation-copy"><strong>{m.name} <small>{m.handle}</small></strong><span>{m.message}</span></span><span className="conversation-meta"><small>{m.time}</small>{m.unread && <i/>}</span></button>)}<p className="messages-note"><ShieldCheck size={14}/> Mock conversations only. Real private messaging comes with the backend.</p></section>}{activeNav === 'Profile' && <section className="profile-hero"><div className="profile-cover"/><div className="profile-identity"><Avatar emoji="🧌" color="lavender" size="large"/><div><h2>your alter ego</h2><span>@you_unfiltered</span><p>Professional overthinker. Amateur chaos curator. ✨</p></div><button className="secondary-btn" onClick={() => notify('Profile editing is coming soon.')}>Edit profile</button></div><div className="profile-metrics"><div><strong>{posts.filter(p => p.handle === '@you_unfiltered').length}</strong><span>posts</span></div><div><strong>{posts.filter(p => p.handle === '@you_unfiltered').reduce((n,p)=>n+p.likes,0)}</strong><span>reactions</span></div><div><strong>{savedCount}</strong><span>saved</span></div></div></section>}<div className="posts-list">{visiblePosts.length ? visiblePosts.map(post => <PostCard key={post.id} post={post} onLike={id => togglePost(id, 'liked')} onSave={id => togglePost(id, 'saved')} onComment={() => notify('Comments are coming in the next build.')}/>) : <div className="empty-state"><span>🫥</span><h3>{activeNav === 'Saved' ? 'Nothing saved. Yet.' : 'No chaos found.'}</h3><p>{activeNav === 'Saved' ? 'Tap Save on a post and it’ll show up here.' : 'Try another search or be the first to post.'}</p><button className="secondary-btn" onClick={() => { setQuery(''); setActiveNav('Home'); }}>Back to the feed</button></div>}</div><footer className="mobile-footer">ONLYUGLY © 2026 · MADE FOR THE UNFILTERED</footer></section>
+      {activeNav === 'Create' && <CreateModal inline onClose={() => setActiveNav('Home')} onPost={addPost}/>}{activeNav === 'Create' && <CreateModal inline onClose={() => setActiveNav('Home')} onPost={addPost}/ >}{activeNav === 'Messages' && <section className="messages-preview"><div className="messages-title"><div><span className="eyebrow"><MessageCircle size={15}/> PRIVATE SIDE QUEST</span><h2>Your messages.</h2><p>Unexpected plot twists, delivered privately.</p></div></div><div className="message-search"><Search size={17}/><span>Search conversations</span></div>{[{emoji:'🍞',name:'toast.exe',handle:'@toast.exe',message:'PLEASE tell me that was not my camera roll 😭',time:'2m',unread:true},{emoji:'👾',name:'pixelgremlin',handle:'@pixelgremlin',message:'sent you the most cursed meme',time:'18m',unread:true},{emoji:'🧌',name:'milo.jpg',handle:'@milo_unfiltered',message:'the front camera incident stays between us',time:'1h',unread:false}].map((m,i)=><button className="conversation-row" key={m.handle} onClick={() => notify(`Opening the ${m.name} conversation preview.`)}><Avatar emoji={m.emoji} color={i===0?'pink':i===1?'blue':'lavender'}/><span className="conversation-copy"><strong>{m.name} <small>{m.handle}</small></strong><span>{m.message}</span></span><span className="conversation-meta"><small>{m.time}</small>{m.unread && <i/>}</span></button>)}<p className="messages-note"><ShieldCheck size={14}/> Mock conversations only. Real private messaging comes with the backend.</p></section>}{activeNav === 'Profile' && <section className="profile-hero"><div className="profile-cover"/><div className="profile-identity"><Avatar emoji="🧌" color="lavender" size="large"/><div><h2>your alter ego</h2><span>@you_unfiltered</span><p>Professional overthinker. Amateur chaos curator. ✨</p></div><button className="secondary-btn" onClick={() => notify('Profile editing is coming soon.')}>Edit profile</button></div><div className="profile-metrics"><div><strong>{posts.filter(p => p.handle === '@you_unfiltered').length}</strong><span>posts</span></div><div><strong>{posts.filter(p => p.handle === '@you_unfiltered').reduce((n,p)=>n+p.likes,0)}</strong><span>reactions</span></div><div><strong>{savedCount}</strong><span>saved</span></div></div></section>}<div className="posts-list">{feedLoading && <p className="tiny-note">Loading the live OnlyUgly feed…</p>}{visiblePosts.length ? visiblePosts.map(post => <PostCard key={post.id} post={post} onLike={id => togglePost(id, 'liked')} onSave={id => togglePost(id, 'saved')} onComment={() => notify('Comments are coming in the next build.')}/>) : <div className="empty-state"><span>🫥</span><h3>{activeNav === 'Saved' ? 'Nothing saved. Yet.' : 'No chaos found.'}</h3><p>{activeNav === 'Saved' ? 'Tap Save on a post and it’ll show up here.' : 'Try another search or be the first to post.'}</p><button className="secondary-btn" onClick={() => { setQuery(''); setActiveNav('Home'); }}>Back to the feed</button></div>}</div><footer className="mobile-footer">ONLYUGLY © 2026 · MADE FOR THE UNFILTERED</footer></section>
       <aside className="right-rail"><section className="promo-card"><div className="promo-orb orb-one"/><div className="promo-orb orb-two"/><span className="promo-kicker"><Sparkles size={13}/> THE ONLY RULE</span><h2>Perfect is<br/><span>boring.</span></h2><p>Your weird is welcome here. Bring the chaos, leave the judgement.</p><button onClick={() => setShowGuidelines(true)}>Our little manifesto <ArrowUpRight size={15}/></button><div className="promo-foot"><span>NO FILTERS</span><span>NO SHAME</span><span>JUST VIBES</span></div></section>
       <section className="rail-card trend-card"><div className="rail-title"><h3><Flame size={17}/> The vibe check</h3><span className="live-pill"><i/> NOW</span></div>{[{n:'01',tag:'#FrontCameraBetrayal',desc:'Everyone has been there',delta:'+28%'},{n:'02',tag:'#HairHasNoPlan',desc:'Humidity is the villain',delta:'+16%'},{n:'03',tag:'#NoContextNeeded',desc:'Explain nothing',delta:'+12%'}].map(t => <button className="trend-row" key={t.n} onClick={() => { setQuery(t.tag.slice(1).replace(/([A-Z])/g,' $1').trim()); setActiveNav('Explore'); }}><span className="trend-number">{t.n}</span><span className="trend-info"><strong>{t.tag}</strong><small>{t.desc}</small></span><span className="trend-delta"><ArrowUpRight size={13}/>{t.delta}</span></button>)}<div className="rail-footnote">Demo trends · not live platform data</div></section>
       <section className="rail-card community-card"><div className="community-icon"><ShieldCheck size={20}/></div><div><h3>Keep it kind, okay?</h3><p>Laugh with people, not at them. Share your own moments or get clear permission first.</p><button onClick={() => setShowGuidelines(true)}>Read community rules <ArrowUpRight size={14}/></button></div></section>
