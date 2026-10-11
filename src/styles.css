@@ -287,3 +287,19 @@ body:before{opacity:1!important;filter:blur(80px)!important;background:conic-gra
 .mobile-dock:after{background:linear-gradient(135deg,rgba(255,255,255,.11),rgba(117,35,65,.1) 38%,transparent 66%,rgba(195,150,255,.08))!important}
 .post-card,.rail-card,.promo-card,.composer,.profile-hero,.messages-preview,.create-page-inner{background:rgba(47,18,36,.12)!important}
 body:before{background:radial-gradient(ellipse at 18% 12%,rgba(118,49,91,.2),transparent 42%),radial-gradient(ellipse at 82% 36%,rgba(70,35,112,.22),transparent 46%),radial-gradient(ellipse at 50% 88%,rgba(125,25,48,.16),transparent 44%)!important}
+
+/* Hover glow follows the pill during a drag, independent of committed route */
+.mobile-dock .dock-item.active svg{color:#fff;stroke:#fff;filter:drop-shadow(0 0 5px rgba(237,215,255,.85)) drop-shadow(0 0 12px rgba(192,142,255,.5));transition:filter .12s ease,color .12s ease}
+.mobile-dock .dock-item svg{transition:filter .12s ease,color .12s ease;will-change:filter}
+.mobile-dock .dock-item:not(.active) svg{filter:none}
+.profile-identity>.avatar{width:88px!important;height:88px!important;min-width:88px!important;aspect-ratio:1/1!important;border-radius:50%!important;flex:0 0 88px!important;overflow:hidden;display:grid;place-items:center}
+.profile-identity{align-items:center!important}
+@media(max-width:600px){
+ .post-card,.rail-card,.promo-card,.composer,.profile-hero,.messages-preview,.create-page-inner,.search-wrap,.mobile-dock{backdrop-filter:blur(18px) saturate(165%)!important;-webkit-backdrop-filter:blur(18px) saturate(165%)!important}
+ .profile-identity>.avatar{width:72px!important;height:72px!important;min-width:72px!important;flex-basis:72px!important}
+ .posts-list{contain:layout paint}
+ .post-card{content-visibility:auto;contain-intrinsic-size:620px}
+}
+.page-content{animation:page-arrive .18s ease-out both}
+@keyframes page-arrive{from{opacity:.86;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.page-content{animation:none!important}.mobile-dock .dock-item svg{transition:none!important}}
