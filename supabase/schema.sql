@@ -122,6 +122,22 @@ create policy "Users view own notifications" on public.notifications for select 
 drop policy if exists "Users mark own notifications read" on public.notifications;
 create policy "Users mark own notifications read" on public.notifications for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
+drop policy if exists "Users notify post authors about reactions" on public.notifications;
+create policy "Users notify post authors about reactions"
+on public.notifications
+for insert to authenticated
+with check (
+  auth.uid() = actor_id
+  and kind = 'reaction'
+  and post_id is not null
+  and actor_id <> user_id
+  and exists (
+    select 1 from public.posts p
+    where p.id = notifications.post_id
+      and p.author_id = notifications.user_id
+  )
+);
+
 drop policy if exists "Conversation participants view messages" on public.messages;
 create policy "Conversation participants view messages" on public.messages for select to authenticated using (auth.uid() = sender_id or auth.uid() = recipient_id);
 drop policy if exists "Users send messages as themselves" on public.messages;
