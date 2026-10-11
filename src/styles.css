@@ -438,3 +438,13 @@ body:before{background:radial-gradient(ellipse at 16% 10%,rgba(117,54,160,.27),t
 
 /* Use the connected OU favicon as the shared site brand mark. */
 .brand-mark-image{width:42px;height:42px;display:block;flex:0 0 42px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(171,86,255,.22))}
+
+/* Account/auth controls */
+.account-btn{border:1px solid #493657;border-radius:10px;padding:9px 13px;background:rgba(150,115,190,.13);color:#eee2ff;font-size:11px;font-weight:700;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.account-btn:hover{background:rgba(185,145,225,.2);border-color:#78549a}
+.auth-modal form{display:grid;gap:0}
+.auth-modal .glass-input{width:100%;min-height:43px}
+.auth-modal .publish-btn{margin-top:20px}
+.auth-switch{display:block;width:100%;border:0;background:none;color:#d5baff;padding:15px 5px 0;font-size:12px}
+.auth-message{padding:11px;border:1px solid #69485c;border-radius:9px;background:#3a1d31;color:#ffd8e9;font-size:12px;line-height:1.5}
+@media(max-width:600px){.account-btn{padding:8px 10px;font-size:10px;max-width:105px}.top-actions{gap:7px}}
