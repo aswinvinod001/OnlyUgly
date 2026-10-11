@@ -435,3 +435,6 @@ body:before{background:radial-gradient(ellipse at 16% 10%,rgba(117,54,160,.27),t
  .topbar .search-wrap{backdrop-filter:blur(7px) saturate(150%)!important;-webkit-backdrop-filter:blur(7px) saturate(150%)!important}
  .post-card,.rail-card,.promo-card,.composer,.profile-hero,.messages-preview,.create-page-inner{backdrop-filter:blur(8px) saturate(145%)!important;-webkit-backdrop-filter:blur(8px) saturate(145%)!important}
 }
+
+/* Use the connected OU favicon as the shared site brand mark. */
+.brand-mark-image{width:42px;height:42px;display:block;flex:0 0 42px;object-fit:contain;filter:drop-shadow(0 4px 12px rgba(171,86,255,.22))}
