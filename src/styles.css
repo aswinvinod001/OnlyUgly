@@ -294,12 +294,20 @@ body:before{background:radial-gradient(ellipse at 18% 12%,rgba(118,49,91,.2),tra
 .mobile-dock .dock-item:not(.active) svg{filter:none}
 .profile-identity>.avatar{width:88px!important;height:88px!important;min-width:88px!important;aspect-ratio:1/1!important;border-radius:50%!important;flex:0 0 88px!important;overflow:hidden;display:grid;place-items:center}
 .profile-identity{align-items:center!important}
+/* Keep the rich glass look on mobile instead of flattening the blur. */
 @media(max-width:600px){
- .post-card,.rail-card,.promo-card,.composer,.profile-hero,.messages-preview,.create-page-inner,.search-wrap,.mobile-dock{backdrop-filter:blur(18px) saturate(165%)!important;-webkit-backdrop-filter:blur(18px) saturate(165%)!important}
- .profile-identity>.avatar{width:72px!important;height:72px!important;min-width:72px!important;flex-basis:72px!important}
+ .post-card,.rail-card,.promo-card,.composer,.profile-hero,.messages-preview,.create-page-inner{backdrop-filter:blur(40px) saturate(195%)!important;-webkit-backdrop-filter:blur(40px) saturate(195%)!important}
+ .search-wrap{backdrop-filter:blur(38px) saturate(210%)!important;-webkit-backdrop-filter:blur(38px) saturate(210%)!important}
+ .profile-identity .avatar.large{width:72px!important;height:72px!important;min-width:72px!important;min-height:72px!important;aspect-ratio:1/1!important;border-radius:50%!important;flex:0 0 72px!important;overflow:hidden}
+ .profile-identity{align-items:center!important}
  .posts-list{contain:layout paint}
  .post-card{content-visibility:auto;contain-intrinsic-size:620px}
 }
-.page-content{animation:page-arrive .18s ease-out both}
-@keyframes page-arrive{from{opacity:.86;transform:translateY(3px)}to{opacity:1;transform:translateY(0)}}
-@media(prefers-reduced-motion:reduce){.page-content{animation:none!important}.mobile-dock .dock-item svg{transition:none!important}}
+/* Safari/iOS: use its prefixed backdrop-filter path too, with the full glass treatment. */
+@supports (-webkit-touch-callout:none){
+ .mobile-dock{backdrop-filter:blur(48px) saturate(220%)!important;-webkit-backdrop-filter:blur(48px) saturate(220%)!important}
+ .topbar .brand,.topbar .top-actions>.icon-btn{backdrop-filter:blur(34px) saturate(210%)!important;-webkit-backdrop-filter:blur(34px) saturate(210%)!important}
+ .topbar .search-wrap{backdrop-filter:blur(38px) saturate(220%)!important;-webkit-backdrop-filter:blur(38px) saturate(220%)!important}
+ .post-card,.rail-card,.promo-card,.composer,.profile-hero,.messages-preview,.create-page-inner{backdrop-filter:blur(40px) saturate(200%)!important;-webkit-backdrop-filter:blur(40px) saturate(200%)!important}
+}
+@media(prefers-reduced-motion:reduce){.mobile-dock .dock-item svg{transition:none!important}}
