@@ -100,7 +100,7 @@ function CreateModal({ onClose, onPost, inline = false }) {
   const [ratingQuestion, setRatingQuestion] = useState('Rate the unfiltered energy');
   const [minLabel, setMinLabel] = useState('Not at all');
   const [maxLabel, setMaxLabel] = useState('Absolutely');
-  return <div className={inline ? "create-page-wrap" : "modal-backdrop"} onMouseDown={e => !inline && e.target === e.currentTarget && onClose()}><section className={inline ? "create-page-inner" : "modal"} role="dialog" aria-modal={!inline} aria-labelledby="create-title"><div className="modal-head"><div><span className="eyebrow"><Sparkles size={14}/> YOUR MOMENT, YOUR RULES</span><h2 id="create-title">Post the unfiltered.</h2></div>{!inline && <button className="icon-btn" onClick={onClose} aria-label="Close"><X size={19}/></button>}</div><p className="muted">Share your own moment. Add an optional slider if you want the community to rate a vibe — keep it playful, never use it to rank or shame real people.</p><label className="field-label" htmlFor="caption">What's the moment?</label><textarea id="caption" value={caption} onChange={e => setCaption(e.target.value)} placeholder="Tell the internet what happened..." maxLength={240}/><div className="field-meta"><span>Keep it real, keep it respectful.</span><span>{caption.length}/240</span></div><label className="field-label">Pick a vibe</label><div className="mood-options">{['PURE CHAOS', 'NO CONTEXT', 'CERTIFIED MOMENT'].map(x => <button type="button" key={x} className={mood === x ? 'mood selected' : 'mood'} onClick={() => setMood(x)}>{x}</button>)}</div><label className="field-label">Choose a mood emoji</label><div className="emoji-options">{['🫠','😭','🧌','🍞','👾','✨','🫡','🤡'].map(x => <button type="button" key={x} className={emoji === x ? 'emoji selected' : 'emoji'} onClick={() => setEmoji(x)} aria-label={'Choose '+x}>{x}</button>)}</div><div className="rating-builder"><div className="rating-builder-head"><span className="rating-builder-icon"><Activity size={17}/></span><div><strong>Add a vibe slider</strong><small>Optional · 0–10 slider on your post</small></div><button type="button" role="switch" aria-checked={ratingEnabled} aria-label="Add optional rating slider" className={ratingEnabled ? 'toggle-switch on' : 'toggle-switch'} onClick={() => setRatingEnabled(v => !v)}><span/></button></div>{ratingEnabled && <div className="rating-builder-fields"><label className="field-label" htmlFor="rating-question">What are people rating?</label><input id="rating-question" className="glass-input" value={ratingQuestion} maxLength={70} onChange={e => setRatingQuestion(e.target.value)} placeholder="e.g. Rate the chaos"/><div className="rating-label-inputs"><label><span>Low end</span><input className="glass-input" value={minLabel} maxLength={24} onChange={e => setMinLabel(e.target.value)} placeholder="Not at all"/></label><label><span>High end</span><input className="glass-input" value={maxLabel} maxLength={24} onChange={e => setMaxLabel(e.target.value)} placeholder="Absolutely"/></label></div><div className="rating-live-preview"><div className="rating-heading"><span className="rating-icon"><Activity size={16}/></span><div><strong>{ratingQuestion || 'Your slider question'}</strong><small>Live preview · 0–10</small></div><span className="rating-value">7/10</span></div><div className="rating-preview-track"><span/></div><div className="rating-labels"><span>{minLabel || 'Low'}</span><span>{maxLabel || 'High'}</span></div></div></div>}</div><button className="primary-btn publish-btn" disabled={!caption.trim() || (ratingEnabled && !ratingQuestion.trim())} onClick={() => { onPost({ caption: caption.trim(), mood, emoji, rating: { enabled: ratingEnabled, question: ratingQuestion.trim(), minLabel: minLabel.trim(), maxLabel: maxLabel.trim() } }); onClose(); }}><Send size={17}/> Share your moment</button><p className="tiny-note"><ShieldCheck size={14}/> Preview only — posts stay in this browser session.</p></section></div>;
+  return <div className={inline ? "create-page-wrap" : "modal-backdrop"} onMouseDown={e => !inline && e.target === e.currentTarget && onClose()}><section className={inline ? "create-page-inner" : "modal"} role="dialog" aria-modal={!inline} aria-labelledby="create-title"><div className="modal-head"><div><span className="eyebrow"><Sparkles size={14}/> YOUR MOMENT, YOUR RULES</span><h2 id="create-title">Post the unfiltered.</h2></div>{!inline && <button className="icon-btn" onClick={onClose} aria-label="Close"><X size={19}/></button>}</div><p className="muted">Share your own moment. Add an optional slider if you want the community to rate a vibe — keep it playful, never use it to rank or shame real people.</p><label className="field-label" htmlFor="caption">What's the moment?</label><textarea id="caption" value={caption} onChange={e => setCaption(e.target.value)} placeholder="Tell the internet what happened..." maxLength={240}/><div className="field-meta"><span>Keep it real, keep it respectful.</span><span>{caption.length}/240</span></div><label className="field-label">Pick a vibe</label><div className="mood-options">{['PURE CHAOS', 'NO CONTEXT', 'CERTIFIED MOMENT'].map(x => <button type="button" key={x} className={mood === x ? 'mood selected' : 'mood'} onClick={() => setMood(x)}>{x}</button>)}</div><label className="field-label">Choose a mood emoji</label><div className="emoji-options">{['🫠','😭','🧌','🍞','👾','✨','🫡','🤡'].map(x => <button type="button" key={x} className={emoji === x ? 'emoji selected' : 'emoji'} onClick={() => setEmoji(x)} aria-label={'Choose '+x}>{x}</button>)}</div><div className="rating-builder"><div className="rating-builder-head"><span className="rating-builder-icon"><Activity size={17}/></span><div><strong>Add a vibe slider</strong><small>Optional · 0–10 slider on your post</small></div><button type="button" role="switch" aria-checked={ratingEnabled} aria-label="Add optional rating slider" className={ratingEnabled ? 'toggle-switch on' : 'toggle-switch'} onClick={() => setRatingEnabled(v => !v)}><span/></button></div>{ratingEnabled && <div className="rating-builder-fields"><label className="field-label" htmlFor="rating-question">What are people rating?</label><input id="rating-question" className="glass-input" value={ratingQuestion} maxLength={70} onChange={e => setRatingQuestion(e.target.value)} placeholder="e.g. Rate the chaos"/><div className="rating-label-inputs"><label><span>Low end</span><input className="glass-input" value={minLabel} maxLength={24} onChange={e => setMinLabel(e.target.value)} placeholder="Not at all"/></label><label><span>High end</span><input className="glass-input" value={maxLabel} maxLength={24} onChange={e => setMaxLabel(e.target.value)} placeholder="Absolutely"/></label></div><div className="rating-live-preview"><div className="rating-heading"><span className="rating-icon"><Activity size={16}/></span><div><strong>{ratingQuestion || 'Your slider question'}</strong><small>Live preview · 0–10</small></div><span className="rating-value">7/10</span></div><div className="rating-preview-track"><span/></div><div className="rating-labels"><span>{minLabel || 'Low'}</span><span>{maxLabel || 'High'}</span></div></div></div>}</div><button className="primary-btn publish-btn" disabled={!caption.trim() || (ratingEnabled && !ratingQuestion.trim())} onClick={async () => { const ok = await onPost({ caption: caption.trim(), mood, emoji, rating: { enabled: ratingEnabled, question: ratingQuestion.trim(), minLabel: minLabel.trim(), maxLabel: maxLabel.trim() } }); if (ok !== false) onClose(); }}><Send size={17}/> Share your moment</button><p className="tiny-note"><ShieldCheck size={14}/> Preview only — posts stay in this browser session.</p></section></div>;
 }
 
 export default function App() {
@@ -125,33 +125,42 @@ export default function App() {
     const loadFeed = async () => {
       setFeedLoading(true);
       try {
-        const { data: rows, error } = await supabase.from('posts').select('id,author_id,caption,mood,emoji,image_url,created_at,profiles(display_name,username)').order('created_at', { ascending: false }).limit(50);
+        const { data: rows, error } = await supabase.from('posts').select('id,author_id,caption,mood,emoji,image_url,created_at').order('created_at', { ascending: false }).limit(50);
         if (error) throw error;
-        const userId = authUser?.id;
-        let reactions = [], saved = [];
-        if (rows?.length) {
-          const ids = rows.map(p => p.id);
+        const postRows = rows || [];
+        const ids = postRows.map(p => p.id);
+        const authorIds = [...new Set(postRows.map(p => p.author_id))];
+        let profiles = [], reactions = [], saved = [];
+        if (authorIds.length) {
+          const profileResult = await supabase.from('profiles').select('id,display_name,username,bio').in('id', authorIds);
+          if (profileResult.error) throw profileResult.error;
+          profiles = profileResult.data || [];
+        }
+        if (ids.length) {
           const reactionResult = await supabase.from('reactions').select('post_id,user_id').in('post_id', ids);
-          if (!reactionResult.error) reactions = reactionResult.data || [];
-          if (userId) {
-            const savedResult = await supabase.from('saved_posts').select('post_id').eq('user_id', userId).in('post_id', ids);
-            if (!savedResult.error) saved = savedResult.data || [];
+          if (reactionResult.error) throw reactionResult.error;
+          reactions = reactionResult.data || [];
+          if (authUser?.id) {
+            const savedResult = await supabase.from('saved_posts').select('post_id').eq('user_id', authUser.id).in('post_id', ids);
+            if (savedResult.error) throw savedResult.error;
+            saved = savedResult.data || [];
           }
-          const mapped = rows.map(p => {
-            const profile = p.profiles || {};
-            const postReactions = reactions.filter(r => r.post_id === p.id);
-            return { id:p.id, dbPost:true, authorId:p.author_id, user:profile.display_name || 'unfiltered human', handle:'@'+(profile.username || 'unfiltered'), time:new Date(p.created_at).toLocaleString(), tag:p.mood || 'PURE CHAOS', title:p.caption, body:'Posted with zero filters and maximum personality.', avatar:p.emoji || '🫠', color:'lavender', likes:postReactions.length, comments:0, image:p.image_url ? null : (p.emoji || '🫠'), imageUrl:p.image_url, liked:!!userId && postReactions.some(r => r.user_id === userId), saved:saved.some(s => s.post_id === p.id), rating:null };
-          });
-          if (!cancelled) setPosts([...mapped, ...initialPosts]);
-        } else if (!cancelled) setPosts(initialPosts);
+        }
+        const mapped = postRows.map(p => {
+          const profile = profiles.find(x => x.id === p.author_id) || {};
+          const postReactions = reactions.filter(x => x.post_id === p.id);
+          return { id:p.id, dbPost:true, authorId:p.author_id, user:profile.display_name || 'unfiltered human', handle:'@'+(profile.username || 'unfiltered'), time:new Date(p.created_at).toLocaleString(), tag:p.mood || 'PURE CHAOS', title:p.caption, body:'Posted with zero filters and maximum personality.', avatar:p.emoji || '🫠', color:'lavender', likes:postReactions.length, comments:0, image:p.emoji || '🫠', imageUrl:p.image_url, liked:!!authUser?.id && postReactions.some(x => x.user_id === authUser.id), saved:saved.some(x => x.post_id === p.id), rating:null };
+        });
+        if (!cancelled) setPosts([...mapped, ...initialPosts]);
       } catch (err) {
         console.error('OnlyUgly feed could not load:', err);
-        if (!cancelled) notify('Could not load the live feed. Check your Supabase settings.');
+        if (!cancelled) notify('Live feed error: ' + (err.message || 'please check Supabase permissions'));
       } finally { if (!cancelled) setFeedLoading(false); }
     };
     loadFeed();
     return () => { cancelled = true; };
   }, [authUser?.id]);
+
   const savedCount = posts.filter(p => p.saved).length;
   const visiblePosts = useMemo(() => posts.filter(p => {
     const matches = `${p.user} ${p.title} ${p.body} ${p.tag}`.toLowerCase().includes(query.toLowerCase());
@@ -183,21 +192,20 @@ export default function App() {
     setPosts(current => current.map(p => p.id === id ? { ...p, [field]: !p[field], ...(field === 'liked' ? { likes: p.likes + (p.liked ? -1 : 1) } : {}) } : p));
   };
   const addPost = async ({ caption, mood, emoji, rating }) => {
-    if (!authUser) { setShowAuth(true); notify('Sign in to publish a real post.'); return; }
-    if (isSupabaseConfigured) {
-      const { data, error } = await supabase.from('posts').insert({ author_id:authUser.id, caption, mood, emoji }).select('id,author_id,caption,mood,emoji,image_url,created_at,profiles(display_name,username)').single();
-      if (error) { notify(error.message || 'Could not publish. Please try again.'); return; }
-      const p = data;
-      setPosts(current => [{ id:p.id, dbPost:true, authorId:p.author_id, user:p.profiles?.display_name || authUser.user_metadata?.display_name || 'you', handle:'@'+(p.profiles?.username || 'you_unfiltered'), time:'just now', tag:p.mood, title:p.caption, body:'Posted with zero filters and maximum personality.', avatar:p.emoji || emoji, color:'lavender', likes:0, comments:0, image:p.emoji || emoji, liked:false, saved:false, rating:null }, ...current]);
-      setActiveNav('Home'); setQuery(''); notify('Your moment is live!'); return;
-    }
-    setPosts(current => [{ id: Date.now(), user: 'you', handle: '@you_unfiltered', time: 'just now', tag: mood, title: caption, body: 'Posted with zero filters and maximum personality.', avatar: emoji, color: 'lavender', likes: 0, comments: 0, image: emoji, rating, liked: false, saved: false }, ...current]);
-    setActiveNav('Home'); setQuery(''); notify('Your moment is in the preview!');
+    if (!authUser) { notify('Log in to publish a real post.'); return false; }
+    if (!isSupabaseConfigured) { notify('Supabase is not connected.'); return false; }
+    const { data, error } = await supabase.from('posts').insert({ author_id:authUser.id, caption:caption.trim(), mood, emoji }).select('id,author_id,caption,mood,emoji,image_url,created_at').single();
+    if (error) { notify('Post failed: ' + error.message); return false; }
+    const { data: profile } = await supabase.from('profiles').select('display_name,username').eq('id', authUser.id).maybeSingle();
+    const p = data;
+    setPosts(current => [{ id:p.id, dbPost:true, authorId:p.author_id, user:profile?.display_name || authUser.user_metadata?.display_name || 'you', handle:'@'+(profile?.username || authUser.user_metadata?.username || 'you_unfiltered'), time:'just now', tag:p.mood, title:p.caption, body:'Posted with zero filters and maximum personality.', avatar:p.emoji || emoji, color:'lavender', likes:0, comments:0, image:p.emoji || emoji, imageUrl:p.image_url, liked:false, saved:false, rating:null }, ...current]);
+    setActiveNav('Home'); setQuery(''); notify('Your moment is live!'); return true;
   };
 
-  return <div className="app-shell" id="home"><div className="ambient-sparkles" aria-hidden="true">{Array.from({length: 8}, (_, i) => <span key={i}/>)}</div>
+
+  return !authUser ? <AuthPanel onAuthChange={setAuthUser}/> : <div className="app-shell" id="home"><div className="ambient-sparkles" aria-hidden="true">{Array.from({length: 8}, (_, i) => <span key={i}/>)}</div>
     <aside className="sidebar"><Brand/><button className="mobile-search icon-btn" aria-label="Search"><Search/></button><div className="sidebar-profile"><Avatar emoji="🧌" color="lavender"/><div><strong>your alter ego</strong><span>@you_unfiltered</span></div><ChevronDown size={16}/></div><div className="side-label">YOUR SPACE</div><nav className="main-nav">{nav.map(({label, icon: Icon}) => <button key={label} aria-label={label} title={label} className={activeNav === label ? 'nav-item active' : 'nav-item'} onClick={() => setActiveNav(label)}><Icon size={19}/><span>{label}</span></button>)}</nav><button className="primary-btn side-create" onClick={() => { setShowCreate(false); setActiveNav("Create"); }}><Plus size={18}/> Create a post</button><div className="side-bottom"><button className="nav-item" onClick={() => setShowGuidelines(true)}><ShieldCheck size={19}/><span>Community guidelines</span></button><button className="nav-item" onClick={() => notify('Settings are coming soon.')}><Settings size={19}/><span>Settings</span></button><div className="side-foot"><span className="online-dot"/> ALL FILTERS OFF <span>v0.1 preview</span></div></div></aside>
-    <main className="main-content"><header className="topbar"><div className="mobile-brand"><Brand/></div><div className="search-wrap"><Search size={18}/><input aria-label="Search posts" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search chaos, people, moments..."/><kbd>⌘ K</kbd></div><div className="top-actions"><button className="account-btn" onClick={() => setShowAuth(true)}>{authUser ? (authUser.user_metadata?.display_name || authUser.email) : "Sign in"}</button><button className="icon-btn" aria-label="Notifications" onClick={() => notify('You’re all caught up.')}><Bell size={20}/><i/></button></div></header>
+    <main className="main-content"><header className="topbar"><div className="mobile-brand"><Brand/></div><div className="search-wrap"><Search size={18}/><input aria-label="Search posts" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search chaos, people, moments..."/><kbd>⌘ K</kbd></div><div className="top-actions"><button className="icon-btn" aria-label="Notifications" onClick={() => notify('You’re all caught up.')}><Bell size={20}/><i/></button></div></header>
       <div className="content-grid"><section className="feed-column"><div className="welcome-row"><div><div className="eyebrow"><Sparkles className="gemini-sparkle" size={16}/> YOUR DAILY DOSE OF REAL</div><h1>{activeNav === 'Saved' ? 'Your saved chaos.' : activeNav === 'Trending' ? 'The chaos is trending.' : activeNav === 'Profile' ? 'Your unfiltered era.' : <>It's giving <span>unfiltered.</span></>}</h1><p>{activeNav === 'Saved' ? 'Moments you wanted to keep close.' : activeNav === 'Profile' ? 'Your moments, your little corner of chaos.' : 'No perfect angles. No pretending. Just moments.'}</p></div><div className="date-pill"><span className="date-dot"/> THE INTERNET, UNFILTERED</div></div>
       {activeNav !== 'Trending' && activeNav !== 'Saved' && activeNav !== 'Messages' && activeNav !== 'Create' && <button className="composer" onClick={() => setShowCreate(true)}><Avatar emoji="🧌" color="lavender"/><span>What's your most unfiltered moment?</span><span className="composer-add"><ImagePlus size={17}/></span><span className="composer-cta">Post it <ArrowUpRight size={15}/></span></button>}
       <div className="feed-heading"><div><h2>{activeNav === 'Saved' ? 'Saved moments' : activeNav === 'Trending' ? 'Trending now' : activeNav === 'Profile' ? 'Your posts' : 'The unfiltered feed'} <span className="live-pill"><i/> LIVE</span></h2><p>Real people. Ridiculous moments. Zero judgement.</p></div><button className="sort-btn" onClick={() => notify('Showing the latest preview posts.')}>Latest <ChevronDown size={15}/></button></div>
