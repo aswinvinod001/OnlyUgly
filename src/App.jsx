@@ -172,7 +172,6 @@ export default function App() {
   const [moodNote,setMoodNote] = useState(null);
   const [moodNotes,setMoodNotes] = useState([]);
   const [moodDuration,setMoodDuration] = useState(12);
-  const [dockOffset, setDockOffset] = useState(0);
   useEffect(() => {
     if (!isSupabaseConfigured) return;
     let cancelled = false;
