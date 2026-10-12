@@ -584,3 +584,6 @@ body:before{background:radial-gradient(ellipse at 16% 10%,rgba(117,54,160,.27),t
 .gravity-toggle small{color:#9d94b2;font-size:10px}
 .mobile-dock{touch-action:pan-y}.dock-active-pill{max-width:calc(100% - 16px)}
 @media(max-width:600px){.utility-page-grid{display:block}.chat-scroll{max-height:calc(100dvh - 370px)}.chat-bubble{max-width:88%}}
+
+/* One compact score box; keep the community average unboxed */
+.rating-value{min-width:auto;padding:0;border:0;background:transparent;display:flex;align-items:baseline;gap:3px}.rating-value small{font-size:9px;opacity:.75}.rating-control .rating-selected-value{display:block}.rating-slider{transition:filter .22s ease,background-size .22s ease}.gravity-enabled .rating-slider{filter:drop-shadow(0 0 7px rgba(184,130,255,.35))}
