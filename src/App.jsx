@@ -150,6 +150,7 @@ export default function App() {
     loadMood();
     return ()=>{alive=false;supabase.removeChannel(channel);};
   },[authUser?.id]);
+  useEffect(() => { const timer=window.setInterval(() => setMoodNotes(current=>current.filter(note=>new Date(note.expires_at).getTime()>Date.now())),30000); return () => window.clearInterval(timer); }, []);
   const [posts, setPosts] = useState([]);
   const [feedLoading, setFeedLoading] = useState(false);
   const [activeNav, setActiveNav] = useState('Home');
