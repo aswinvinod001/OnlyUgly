@@ -249,3 +249,22 @@ end;
 $$;
 revoke execute on function public.handle_new_user() from public, anon, authenticated;
 grant execute on function public.handle_new_user() to postgres;
+
+
+-- Temporary mood notes (Instagram Notes-style, expiring after 12–24 hours)
+create table if not exists public.mood_notes (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  emoji text not null,
+  created_at timestamptz not null default now(),
+  expires_at timestamptz not null,
+  constraint mood_notes_expiry_valid check (expires_at > created_at)
+);
+create index if not exists mood_notes_active_idx on public.mood_notes (expires_at desc);
+alter table public.mood_notes enable row level security;
+drop policy if exists "Active mood notes are visible to authenticated users" on public.mood_notes;
+create policy "Active mood notes are visible to authenticated users" on public.mood_notes for select to authenticated using (expires_at > now());
+drop policy if exists "Users create their own mood notes" on public.mood_notes;
+create policy "Users create their own mood notes" on public.mood_notes for insert to authenticated with check (auth.uid() = user_id and expires_at > now() and expires_at <= now() + interval '24 hours');
+drop policy if exists "Users delete their own mood notes" on public.mood_notes;
+create policy "Users delete their own mood notes" on public.mood_notes for delete to authenticated using (auth.uid() = user_id);
