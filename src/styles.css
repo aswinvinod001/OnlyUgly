@@ -589,3 +589,13 @@ body:before{background:radial-gradient(ellipse at 16% 10%,rgba(117,54,160,.27),t
 .rating-value{min-width:auto;padding:0;border:0;background:transparent;display:flex;align-items:baseline;gap:3px}.rating-value small{font-size:9px;opacity:.75}.rating-control .rating-selected-value{display:block}.rating-slider{transition:filter .22s ease,background-size .22s ease}.gravity-enabled .rating-slider{filter:drop-shadow(0 0 7px rgba(184,130,255,.35))}
 
 .dock-active-pill.dragging{transform:translateX(var(--drag-x))!important;transition:none!important}.dock-active-pill:not(.dragging){transform:translateX(calc(var(--active-index)*100%))!important}.gravity-direction{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px}.gravity-direction>span{font-size:12px;color:var(--muted,#b9afca);margin-right:4px}.gravity-direction .mood{padding:8px 12px}
+
+.vibe-drop-rail-title{display:flex;align-items:baseline;gap:10px;margin:4px 0 12px;font-weight:750;font-size:15px;color:#f3eaff}
+.vibe-drop-rail-title small{font-size:11px;font-weight:400;color:#a99cbd}
+.vibe-drop-card{display:flex;flex:0 0 104px;min-height:112px;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:12px 10px;border-radius:20px;border:1px solid rgba(211,177,255,.26);background:linear-gradient(145deg,rgba(137,91,203,.19),rgba(35,24,54,.72) 62%,rgba(214,106,184,.13));box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 8px 22px rgba(0,0,0,.12);overflow:hidden;position:relative}
+.vibe-drop-card:before{content:"";position:absolute;inset:-70% -30%;background:linear-gradient(115deg,transparent 42%,rgba(255,255,255,.12) 50%,transparent 58%);animation:vibe-card-shimmer 4s ease-in-out infinite;pointer-events:none}
+.vibe-drop-emoji{display:grid;place-items:center;width:58px;height:58px;border-radius:18px;font-size:34px;background:radial-gradient(circle at 35% 25%,rgba(255,255,255,.19),rgba(151,103,232,.11) 55%,rgba(17,12,30,.5));border:1px solid rgba(255,255,255,.13);animation:vibe-emoji-float 2.6s ease-in-out infinite;filter:drop-shadow(0 0 12px rgba(185,131,255,.25))}
+.vibe-drop-card small{font-size:10px;color:#c9bddc;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;position:relative}
+@keyframes vibe-emoji-float{0%,100%{transform:translateY(2px) rotate(-4deg) scale(.97)}50%{transform:translateY(-5px) rotate(4deg) scale(1.08)}}
+@keyframes vibe-card-shimmer{0%,65%,100%{transform:translateX(-25%)}35%{transform:translateX(25%)}}
+@media(prefers-reduced-motion:reduce){.vibe-drop-card:before,.vibe-drop-emoji{animation:none}}
