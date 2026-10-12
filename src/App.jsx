@@ -124,6 +124,32 @@ export default function App() {
     });
     return () => { cancelled = true; };
   }, [authUser?.id]);
+  useEffect(() => {
+    if (!authUser?.id || !isSupabaseConfigured) return;
+    let alive = true;
+    supabase.from('profiles').select('id,display_name,username').order('display_name').then(({data,error}) => {
+      if(alive && !error) setMessageProfiles((data||[]).filter(p=>p.id!==authUser.id));
+    });
+    const loadMessages = async () => {
+      const {data,error}=await supabase.from('messages').select('*').or('sender_id.eq.'+authUser.id+',recipient_id.eq.'+authUser.id).order('created_at',{ascending:true}).limit(500);
+      if(alive && !error) setMessageRows(data||[]);
+      if(error) console.warn('Messages could not load:',error.message);
+    };
+    loadMessages();
+    const channel=supabase.channel('onlyugly-messages-'+authUser.id).on('postgres_changes',{event:'*',schema:'public',table:'messages'},payload=>{
+      const row=payload.new || payload.old;
+      if(row && (row.sender_id===authUser.id || row.recipient_id===authUser.id)){
+        if(payload.eventType==='INSERT') setMessageRows(current=>current.some(m=>m.id===row.id)?current:[...current,row].sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)));
+        if(payload.eventType==='UPDATE') setMessageRows(current=>current.map(m=>m.id===row.id?row:m));
+      }
+    }).subscribe();
+    const loadMood=async()=>{
+      const {data,error}=await supabase.from('mood_notes').select('id,user_id,emoji,created_at,expires_at').gt('expires_at',new Date().toISOString()).eq('user_id',authUser.id).maybeSingle();
+      if(alive&&!error)setMoodNote(data||null);
+    };
+    loadMood();
+    return ()=>{alive=false;supabase.removeChannel(channel);};
+  },[authUser?.id]);
   const [posts, setPosts] = useState([]);
   const [feedLoading, setFeedLoading] = useState(false);
   const [activeNav, setActiveNav] = useState('Home');
