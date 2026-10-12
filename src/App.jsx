@@ -142,7 +142,7 @@ export default function App() {
         if(payload.eventType==='INSERT') setMessageRows(current=>current.some(m=>m.id===row.id)?current:[...current,row].sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)));
         if(payload.eventType==='UPDATE') setMessageRows(current=>current.map(m=>m.id===row.id?row:m));
       }
-    }).subscribe();
+    }).on('postgres_changes',{event:'INSERT',schema:'public',table:'mood_notes'},payload=>{const row=payload.new;if(row&&new Date(row.expires_at).getTime()>Date.now())setMoodNotes(current=>[row,...current.filter(n=>n.id!==row.id)]);}).subscribe();
     const loadMood=async()=>{
       const {data,error}=await supabase.from('mood_notes').select('id,user_id,emoji,created_at,expires_at').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(100);
       if(alive&&!error){setMoodNotes(data||[]);setMoodNote((data||[]).find(n=>n.user_id===authUser.id)||null);}
