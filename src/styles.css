@@ -550,3 +550,11 @@ body:before{background:radial-gradient(ellipse at 16% 10%,rgba(117,54,160,.27),t
 .gallery-dots{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);display:flex;align-items:center;gap:6px;padding:6px 9px;border-radius:999px;background:rgba(8,8,17,.56);backdrop-filter:blur(8px);z-index:2}.gallery-dot{width:6px;height:6px;min-width:6px;padding:0;border:0;border-radius:50%;background:rgba(255,255,255,.52);transition:width .18s ease}.gallery-dot.active{width:17px;background:#fff;border-radius:999px}
 .rating-control{display:flex;align-items:center;gap:14px}.rating-control .rating-slider{flex:1;min-width:0}.rating-selected-value{min-width:48px;text-align:center;padding:7px 9px;border:1px solid rgba(167,139,250,.26);border-radius:10px;background:rgba(139,92,246,.12);color:#f2e8ff;font-size:16px;font-weight:800}.rating-thanks{display:flex;align-items:center;gap:6px;flex-wrap:wrap;padding:12px;border-radius:12px;background:rgba(117,255,190,.07);border:1px solid rgba(117,255,190,.17);color:#bdf8d7;font-size:12px}
 @media(max-width:600px){.create-page-composer{padding:16px 12px;border-radius:18px}.gallery-dots{bottom:9px}}
+
+.auth-loading{min-height:100dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:#090811;color:#bdb1d4;font-size:13px}.auth-loading-mark{display:grid;place-items:center;width:52px;height:52px;border:1px solid rgba(203,171,255,.5);border-radius:18px;background:rgba(156,112,255,.13);color:#eadfff;font-weight:800;font-size:18px;box-shadow:0 0 35px rgba(156,112,255,.16)}
+.utility-page-grid .feed-column{min-width:0}.utility-page-grid .right-rail{display:none}
+.gravity-toggle{display:flex;align-items:center;gap:8px;margin:12px 0;color:#ddd2f0;font-size:12px}.gravity-toggle small{color:#9d94b2;font-size:10px}
+.rating-control .rating-selected-value{display:none}
+.mobile-dock .dock-active-pill{transform:translateX(var(--drag-x,0px));}
+.mobile-dock .dock-active-pill.dragging{transition:none}
+@media(max-width:600px){.utility-page-grid{display:block}.utility-page-grid .feed-column{width:100%;max-width:none}.utility-page-grid .right-rail{display:none}}
