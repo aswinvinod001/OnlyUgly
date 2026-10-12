@@ -267,7 +267,7 @@ export default function App() {
   const publishMoodNote = async (emoji,duration=12) => {
     if(!authUser?.id||!isSupabaseConfigured){notify('Sign in to share a mood note.');return false;}
     const expiresAt=new Date(Date.now()+Math.min(24,Math.max(12,duration))*60*60*1000).toISOString();
-    const {data,error}=await supabase.from('mood_notes').insert({user_id:authUser.id,emoji,expires_at:expiresAt}).select('id,user_id,emoji,created_at,expires_at').single();
+    const {data,error}=await supabase.from('mood_notes').upsert({user_id:authUser.id,emoji,expires_at:expiresAt},{onConflict:'user_id'}).select('id,user_id,emoji,created_at,expires_at').single();
     if(error){notify('Mood note failed: '+error.message);return false;}
     setMoodNote(data);setMoodNotes(current=>[data,...current.filter(n=>n.user_id!==authUser.id)]);
     notify('Your mood note is live!');
