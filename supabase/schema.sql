@@ -283,3 +283,16 @@ begin
     alter publication supabase_realtime add table public.mood_notes;
   end if;
 end $$;
+
+
+-- Keep exactly one active vibe note per account. Publishing replaces the previous one.
+delete from public.mood_notes a
+using public.mood_notes b
+where a.user_id = b.user_id
+  and (a.created_at < b.created_at or (a.created_at = b.created_at and a.id::text < b.id::text));
+create unique index if not exists mood_notes_one_per_user on public.mood_notes(user_id);
+drop policy if exists "Users replace their own mood note" on public.mood_notes;
+create policy "Users replace their own mood note" on public.mood_notes
+for update to authenticated
+using (auth.uid() = user_id)
+with check (auth.uid() = user_id and expires_at > now() and expires_at <= now() + interval '24 hours');
