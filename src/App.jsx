@@ -220,6 +220,16 @@ export default function App() {
     return () => { cancelled = true; supabase.removeChannel(feedChannel); };
   }, [authUser?.id]);
 
+  useEffect(() => {
+    if(!authUser?.id||!activeConversation||!isSupabaseConfigured)return;
+    const unread=messageRows.filter(m=>m.sender_id===activeConversation&&m.recipient_id===authUser.id&&!m.read_at);
+    if(!unread.length)return;
+    const ids=unread.map(m=>m.id);
+    supabase.from('messages').update({read_at:new Date().toISOString()}).in('id',ids).then(({error})=>{
+      if(error)console.warn('Could not mark messages read:',error.message);
+      else setMessageRows(rows=>rows.map(m=>ids.includes(m.id)?{...m,read_at:new Date().toISOString()}:m));
+    });
+  },[authUser?.id,activeConversation,messageRows]);
   const savedCount = posts.filter(p => p.saved).length;
   const visiblePosts = useMemo(() => posts.filter(p => {
     const matches = `${p.user} ${p.title} ${p.body} ${p.tag}`.toLowerCase().includes(query.toLowerCase());
