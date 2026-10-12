@@ -268,3 +268,18 @@ drop policy if exists "Users create their own mood notes" on public.mood_notes;
 create policy "Users create their own mood notes" on public.mood_notes for insert to authenticated with check (auth.uid() = user_id and expires_at > now() and expires_at <= now() + interval '24 hours');
 drop policy if exists "Users delete their own mood notes" on public.mood_notes;
 create policy "Users delete their own mood notes" on public.mood_notes for delete to authenticated using (auth.uid() = user_id);
+
+
+-- Enable Supabase Realtime for live feed, messaging, and mood notes.
+do $$
+begin
+  if not exists (select 1 from pg_publication_tables where pubname='supabase_realtime' and schemaname='public' and tablename='posts') then
+    alter publication supabase_realtime add table public.posts;
+  end if;
+  if not exists (select 1 from pg_publication_tables where pubname='supabase_realtime' and schemaname='public' and tablename='messages') then
+    alter publication supabase_realtime add table public.messages;
+  end if;
+  if not exists (select 1 from pg_publication_tables where pubname='supabase_realtime' and schemaname='public' and tablename='mood_notes') then
+    alter publication supabase_realtime add table public.mood_notes;
+  end if;
+end $$;
