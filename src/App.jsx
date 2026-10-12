@@ -179,7 +179,7 @@ export default function App() {
     const loadFeed = async () => {
       setFeedLoading(true);
       try {
-        const { data: rows, error } = await supabase.from('posts').select('id,author_id,caption,mood,emoji,image_url,image_urls,auto_swipe,vibe_emoji,rating_enabled,rating_question,rating_min_label,rating_max_label,gravity_engine,created_at').order('created_at', { ascending: false }).limit(50);
+        const { data: rows, error } = await supabase.from('posts').select('id,author_id,caption,mood,emoji,image_url,image_urls,auto_swipe,vibe_emoji,rating_enabled,rating_question,rating_min_label,rating_max_label,gravity_engine,gravity_direction,created_at').order('created_at', { ascending: false }).limit(50);
         if (error) throw error;
         const postRows = rows || [];
         const ids = postRows.map(p => p.id);
@@ -284,7 +284,7 @@ export default function App() {
         if(uploadError)throw uploadError;
         const {data:publicData}=supabase.storage.from('onlyugly-posts').getPublicUrl(path);urls.push(publicData.publicUrl);
       }
-      const payload={author_id:authUser.id,caption:caption.trim(),mood,emoji:vibeEmoji||'🫠',vibe_emoji:vibeEmoji,image_urls:urls,image_url:urls[0]||null,auto_swipe:autoSwipe,gravity_engine:gravityEngine,rating_enabled:!!rating?.enabled,rating_question:rating?.question||null,rating_min_label:rating?.minLabel||'Not at all',rating_max_label:rating?.maxLabel||'Absolutely',updated_at:new Date().toISOString()};
+      const payload={author_id:authUser.id,caption:caption.trim(),mood,emoji:vibeEmoji||'🫠',vibe_emoji:vibeEmoji,image_urls:urls,image_url:urls[0]||null,auto_swipe:autoSwipe,gravity_engine:gravityEngine,gravity_direction:gravityDirection,rating_enabled:!!rating?.enabled,rating_question:rating?.question||null,rating_min_label:rating?.minLabel||'Not at all',rating_max_label:rating?.maxLabel||'Absolutely',updated_at:new Date().toISOString()};
       let result;
       if(editingPost){result=await supabase.from('posts').update(payload).eq('id',editingPost.id).eq('author_id',authUser.id).select('id').single();}
       else result=await supabase.from('posts').insert(payload).select('id').single();
