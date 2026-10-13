@@ -700,3 +700,10 @@ body:before{background:radial-gradient(ellipse at 16% 10%,rgba(117,54,160,.27),t
  .conversation-person{gap:7px}
  .follow-button{padding:7px 9px!important;font-size:10px!important}
 }
+
+.profile-avatar-editor{display:flex;align-items:center;gap:14px;margin:8px 0 18px;padding:12px;border:1px solid rgba(255,255,255,.09);border-radius:14px;background:rgba(255,255,255,.025)}
+.profile-avatar-editor>.avatar{width:58px;height:58px;flex:0 0 58px}
+.profile-avatar-editor>div:last-child{display:grid;gap:7px;min-width:0;flex:1}
+.profile-avatar-editor input[type=file]{display:block;width:100%;min-width:0;color:#b8a9c8;font-size:11px}
+.profile-avatar-editor small{font-size:10px;color:#9889a9}
+.avatar{overflow:hidden}
