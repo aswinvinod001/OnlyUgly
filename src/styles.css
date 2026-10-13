@@ -771,3 +771,14 @@ body:before{background:radial-gradient(ellipse at 16% 10%,rgba(117,54,160,.27),t
 .avatar img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center center!important;border-radius:inherit!important;margin:0!important;max-width:none!important;max-height:none!important}
 .profile-identity>.avatar,.viewed-profile-identity>.avatar,.profile-avatar-editor>.avatar{border-radius:50%!important;aspect-ratio:1/1!important;overflow:hidden!important;position:relative!important}
 .posts-list{width:100%}
+
+
+/* Final polish: remove the full-width separator, keep each glass pill distinct, and restore non-bouncy drag navigation. */
+.topbar,.main-content,.content-grid,.feed-column,.messages-preview.real-messages,.chat-scroll,.chat-compose{border-top:0!important;border-bottom:0!important;box-shadow:none!important}
+.topbar:before,.topbar:after,.main-content:before,.main-content:after,.content-grid:before,.content-grid:after{display:none!important;content:none!important}
+.topbar{background:transparent!important}
+.mobile-dock{touch-action:pan-y!important;user-select:none;-webkit-user-select:none}
+.mobile-dock.dock-dragging{touch-action:none!important;cursor:grabbing}
+.mobile-dock.dock-dragging .dock-active-pill{left:4px!important;transform:translateX(calc(var(--drag-index,0)*100%))!important;transition:none!important;scale:1!important;filter:none!important;animation:none!important}
+.mobile-dock .dock-item:active{transform:none!important;animation:none!important}
+@media(max-width:920px){.dock-active-pill:not(.dragging){transition:transform .16s ease-out!important}}
