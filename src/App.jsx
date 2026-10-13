@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { supabase, isSupabaseConfigured } from './lib/supabase.js';
-import { Activity, ArrowDownRight, ArrowLeft, ArrowUpRight, Bell, Bookmark, Camera, Check, ChevronDown, CircleHelp, Compass, Copy, Flame, Heart, Home, ImagePlus, MessageCircle, MoreHorizontal, Pencil, Plus, Search, Send, Settings, ShieldCheck, Sparkles, Trash2, TrendingUp, UserRound, X } from 'lucide-react';
+import { Activity, ArrowDownRight, ArrowLeft, ArrowUpRight, Bell, Bookmark, Camera, Check, ChevronDown, CircleHelp, Compass, Copy, Flame, Heart, Home, ImagePlus, MessageCircle, MoreHorizontal, Pencil, Plus, Search, Send, Settings, ShieldAlert, ShieldCheck, Sparkles, Trash2, TrendingUp, UserRound, X } from 'lucide-react';
 
 const initialPosts = [
   { id: 1, user: 'milo.jpg', handle: '@milo_unfiltered', time: '12 min ago', tag: 'PURE CHAOS', title: 'the front camera humbled me so hard 💀', body: 'opened it by accident and saw 14 generations of bad decisions. anyway good morning besties', avatar: '🧌', color: 'lavender', likes: 284, comments: 32, image: '📸', liked: false, saved: false },
