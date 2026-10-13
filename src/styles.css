@@ -646,3 +646,8 @@ body:before{background:radial-gradient(ellipse at 16% 10%,rgba(117,54,160,.27),t
     left: 3px !important;
   }
 }
+
+/* Keep the global brand/search/notifications bar visible above full-screen messages. */
+.messages-preview.real-messages{top:79px!important;height:calc(100dvh - 79px)!important;min-height:0!important;z-index:3!important;padding-top:22px!important}
+@media(max-width:920px){.messages-preview.real-messages{top:68px!important;height:calc(100dvh - 68px)!important}}
+@media(max-width:600px){.messages-preview.real-messages{top:61px!important;height:calc(100dvh - 61px)!important;padding:16px 14px calc(88px + env(safe-area-inset-bottom))!important}}
