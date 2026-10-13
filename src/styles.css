@@ -928,3 +928,8 @@ html.reduce-motion .search-wrap{backdrop-filter:none!important;-webkit-backdrop-
 .settings-category span{display:flex;flex-direction:column;gap:5px}.settings-category strong{font-size:14px}.settings-category small{font-size:12px;color:var(--muted,#a99fba)}
 .settings-category:hover{border-color:rgba(194,153,255,.4);background:rgba(255,255,255,.06)}
 .settings-back-link{display:flex;align-items:center;gap:7px;border:0;background:transparent;color:var(--muted,#a99fba);padding:5px 0 12px;cursor:pointer;font:inherit;font-size:12px}
+
+
+/* Keep the Home branding pill geometrically centered in the top bar */
+.topbar>.search-wrap.brand-pill{position:absolute;left:50%;transform:translateX(-50%);flex:0 0 190px;width:190px;max-width:190px;justify-content:center;margin:0;}
+@media(max-width:700px){.topbar>.search-wrap.brand-pill{left:50%;width:clamp(130px,42vw,190px);max-width:190px;flex-basis:auto;}}
