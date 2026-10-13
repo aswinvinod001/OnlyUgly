@@ -808,3 +808,13 @@ html:has(.app-shell.chat-open),body:has(.app-shell.chat-open),body:has(.app-shel
 .chat-open .main-content{position:fixed!important;inset:0!important;height:100dvh!important;max-height:100dvh!important;overflow:hidden!important}
 .chat-open .messages-preview.real-messages{position:fixed!important;top:61px!important;left:0!important;right:0!important;bottom:0!important;height:auto!important;max-height:none!important;min-height:0!important;overflow:hidden!important}
 .chat-open .mobile-footer{display:none!important}
+
+
+/* Definitive messages + chat header overlay: the messages panel must not start below the pills or paint a black slab behind them. */
+.messages-preview.real-messages{position:fixed!important;inset:0!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100dvh!important;max-height:100dvh!important;min-height:0!important;margin:0!important;padding:78px 14px calc(88px + env(safe-area-inset-bottom))!important;overflow:hidden!important;background:transparent!important;background-color:transparent!important;background-image:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;z-index:30!important}
+.messages-preview.real-messages .messages-title{padding-top:8px!important}
+.messages-preview.real-messages .people-results,.messages-preview.real-messages .chat-scroll{background:transparent!important;background-color:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important}
+.chat-open .messages-preview.real-messages{inset:0!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100vw!important;height:100dvh!important;max-height:100dvh!important;padding:61px 12px max(8px,env(safe-area-inset-bottom))!important;background:transparent!important;background-color:transparent!important;background-image:none!important;z-index:30!important}
+.chat-open .messages-preview.real-messages .chat-scroll{background:transparent!important;background-image:none!important}
+.chat-open .topbar{z-index:60!important;background:transparent!important;background-image:none!important;pointer-events:none!important}
+.chat-open .topbar .mobile-brand,.chat-open .topbar .search-wrap,.chat-open .topbar .top-actions{pointer-events:auto!important}
