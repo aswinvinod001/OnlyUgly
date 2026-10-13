@@ -739,3 +739,19 @@ body:before{background:radial-gradient(ellipse at 16% 10%,rgba(117,54,160,.27),t
  .chat-open .topbar .top-actions>.icon-btn{width:42px!important;height:42px!important}
  .chat-open .messages-preview.real-messages{inset:61px 0 0 0!important;height:calc(100dvh - 61px)!important;padding:4px 12px max(10px,env(safe-area-inset-bottom))!important}
 }
+
+/* Fix rotated back arrow and make conversation a borderless, viewport-filling feed. */
+.chat-top-avatar>svg,.chat-back-button>svg{transform:none!important}
+.chat-back-button{align-self:center;vertical-align:middle}
+.chat-open .messages-preview.real-messages{inset:79px 0 0!important;height:calc(100dvh - 79px)!important;padding:0 24px max(10px,env(safe-area-inset-bottom))!important;background:transparent!important}
+.chat-open .messages-preview.real-messages .chat-scroll{padding:12px 0 20px!important;background:transparent!important;border:0!important;border-radius:0!important}
+.chat-open .messages-preview.real-messages .chat-compose{position:relative!important;bottom:auto!important;flex:0 0 auto!important;margin:0!important;padding:10px 0 max(8px,env(safe-area-inset-bottom))!important;border:0!important;border-radius:0!important;background:linear-gradient(180deg,rgba(11,9,18,.12),rgba(11,9,18,.96) 35%)!important}
+.chat-date-divider{display:flex;justify-content:center;align-items:center;margin:14px 0 8px;color:#a99bb8;font-size:10px}
+.chat-date-divider span{padding:6px 11px;border:1px solid rgba(255,255,255,.09);border-radius:999px;background:rgba(255,255,255,.045)}
+.search-person-row{min-height:78px}
+.viewed-profile-bio{margin:8px 0 18px;color:#c4b7d5;font-size:13px;line-height:1.6;white-space:pre-wrap}
+.viewed-profile-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:14px 0 20px}
+.viewed-profile-stats>div{display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;border:1px solid rgba(255,255,255,.09);border-radius:14px;background:rgba(255,255,255,.03)}
+.viewed-profile-stats strong{font-size:18px;color:#f5ecff}.viewed-profile-stats span{font-size:10px;color:#a99bb8}
+.viewed-profile-actions{display:flex;gap:10px}.viewed-profile-actions>*{flex:1;display:flex;align-items:center;justify-content:center;gap:7px}
+@media(max-width:600px){.chat-open .messages-preview.real-messages{inset:61px 0 0!important;height:calc(100dvh - 61px)!important;padding:0 12px max(8px,env(safe-area-inset-bottom))!important}}
