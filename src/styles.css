@@ -908,3 +908,12 @@ html:has(.app-shell.chat-open),body:has(.app-shell.chat-open),body:has(.app-shel
 html.reduce-motion *,html.reduce-motion *:before,html.reduce-motion *:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 html.reduce-motion .search-wrap{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 @media(max-width:700px){.search-wrap.brand-pill{flex:0 1 190px;min-width:135px;height:42px}.search-wrap.brand-pill .brand{font-size:16px}.explore-people{padding:12px}.settings-modal{width:min(100%,560px);max-height:90dvh}}
+
+.viewed-profile-posts{margin-top:18px;border-top:1px solid var(--border);padding-top:14px}
+.viewed-profile-posts h3{font-size:14px;margin:0 0 8px}
+.viewed-profile-post-row{display:flex;align-items:center;gap:10px;width:100%;padding:11px 8px;text-align:left;color:var(--text);background:transparent;border:0;border-radius:11px;cursor:pointer}
+.viewed-profile-post-row:hover{background:rgba(255,255,255,.045)}
+.viewed-profile-post-row>span{font-size:23px}
+.viewed-profile-post-row>div{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}
+.viewed-profile-post-row strong{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.viewed-profile-post-row small{font-size:10px;color:var(--muted,#a99fba)}
