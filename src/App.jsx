@@ -111,6 +111,7 @@ export default function App() {
   const [showSettings, setShowSettings] = useState(false);
   const [settingsSection, setSettingsSection] = useState('menu');
   const [activityItems, setActivityItems] = useState({posts:[],reacted:[],commented:[],saved:[]});
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [deleteConfirmPassword, setDeleteConfirmPassword] = useState('');
   const [deletingAccount, setDeletingAccount] = useState(false);
