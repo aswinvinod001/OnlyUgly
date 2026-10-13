@@ -942,3 +942,13 @@ html.reduce-motion .search-wrap{backdrop-filter:none!important;-webkit-backdrop-
 .activity-showcase-grid span{font-size:11px;color:var(--muted,#a99fba)}
 .danger-zone .glass-input{margin:6px 0 12px}
 .danger-zone .danger-btn:disabled{opacity:.45;cursor:not-allowed}
+
+
+/* Danger Zone and deliberate delete confirmation */
+.danger-zone{margin-top:18px;padding:16px;border:1px solid rgba(255,65,94,.45);border-radius:16px;background:radial-gradient(ellipse at 0 0,rgba(255,40,75,.12),transparent 68%),rgba(100,15,35,.09);box-shadow:0 0 22px rgba(255,30,75,.07),inset 0 0 18px rgba(255,40,75,.04)}
+.danger-zone-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}.danger-zone-heading>strong{color:#ff8b9b;font-size:14px}.danger-zone-heading>span{font-size:10px;color:#ff9baa;letter-spacing:.04em;text-transform:uppercase}
+.delete-confirm-backdrop{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:20px;background:rgba(5,3,10,.76);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.delete-confirm-card{width:min(100%,430px);display:flex;flex-direction:column;gap:12px;padding:24px;border:1px solid rgba(255,100,125,.3);border-radius:22px;background:rgba(24,15,29,.97);box-shadow:0 24px 90px rgba(0,0,0,.5),0 0 38px rgba(255,40,75,.08)}
+.delete-confirm-icon{width:46px;height:46px;display:grid;place-items:center;border-radius:14px;background:rgba(255,60,85,.12);color:#ff8799}.delete-confirm-card h3{margin:0;color:var(--text);font-size:19px}.delete-confirm-card p{margin:0 0 4px;font-size:12px;line-height:1.6;color:var(--muted,#b6aabf)}.delete-confirm-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:6px}.delete-confirm-actions .danger-btn:disabled{opacity:.4;cursor:not-allowed}
+.activity-list-section{display:flex;flex-direction:column;gap:5px;padding:14px 0;border-top:1px solid var(--border)}.activity-list-section h4{font-size:13px;margin:0 0 6px;color:var(--text)}
+.activity-post-row{display:flex;align-items:center;gap:11px;width:100%;padding:11px 10px;border:1px solid transparent;border-radius:12px;text-align:left;color:var(--text);background:rgba(255,255,255,.025);cursor:pointer}.activity-post-row:hover{border-color:var(--border);background:rgba(255,255,255,.05)}.activity-post-emoji{width:38px;height:38px;flex:0 0 38px;display:grid;place-items:center;border-radius:11px;background:rgba(194,153,255,.09);font-size:20px}.activity-post-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}.activity-post-copy strong{font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.activity-post-copy small{font-size:10px;color:var(--muted,#a99fba);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
