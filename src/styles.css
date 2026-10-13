@@ -856,3 +856,22 @@ html:has(.app-shell.chat-open),body:has(.app-shell.chat-open),body:has(.app-shel
   backdrop-filter:none!important;-webkit-backdrop-filter:none!important;border:0!important;box-shadow:none!important;pointer-events:none!important;
 }
 .chat-open .topbar .mobile-brand,.chat-open .topbar .search-wrap,.chat-open .topbar .top-actions{pointer-events:auto!important}
+
+
+/* Navigation pill: pixel-based pointer tracking while dragging; stable active-index positioning after release. */
+@media(max-width:920px){
+  .mobile-dock{touch-action:none!important}
+  .mobile-dock .dock-active-pill{
+    left:4px!important;right:auto!important;
+    width:calc((100% - 8px)/5)!important;
+    transform:translate3d(calc(var(--active-index,0)*100%),0,0)!important;
+    transition:transform .24s cubic-bezier(.22,.75,.25,1)!important;
+    will-change:transform!important;backface-visibility:hidden!important;
+    pointer-events:none!important;animation:none!important;
+  }
+  .mobile-dock.dock-dragging .dock-active-pill{
+    transform:translate3d(var(--drag-x,0px),0,0)!important;
+    transition:none!important;animation:none!important;filter:none!important;
+  }
+  .mobile-dock .dock-item:active{transform:none!important;animation:none!important}
+}
