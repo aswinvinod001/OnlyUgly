@@ -755,3 +755,19 @@ body:before{background:radial-gradient(ellipse at 16% 10%,rgba(117,54,160,.27),t
 .viewed-profile-stats strong{font-size:18px;color:#f5ecff}.viewed-profile-stats span{font-size:10px;color:#a99bb8}
 .viewed-profile-actions{display:flex;gap:10px}.viewed-profile-actions>*{flex:1;display:flex;align-items:center;justify-content:center;gap:7px}
 @media(max-width:600px){.chat-open .messages-preview.real-messages{inset:61px 0 0!important;height:calc(100dvh - 61px)!important;padding:0 12px max(8px,env(safe-area-inset-bottom))!important}}
+
+/* Clean, stationary dock: no squish, jiggle, drag math, or off-centre pill. */
+@media(max-width:920px){
+ .mobile-dock{touch-action:pan-y!important;overflow:hidden!important;isolation:isolate!important}
+ .dock-active-pill{left:4px!important;right:auto!important;width:calc((100% - 8px)/5)!important;height:calc(100% - 8px)!important;top:4px!important;bottom:auto!important;max-width:none!important;transform:translateX(calc(var(--active-index,0)*100%))!important;transition:transform .16s ease-out!important;animation:none!important;filter:none!important;pointer-events:none!important;will-change:auto!important}
+ .mobile-dock.dock-pressed .dock-active-pill,.dock-active-pill.dragging,.mobile-dock:active .dock-active-pill{transform:translateX(calc(var(--active-index,0)*100%))!important;scale:1!important;filter:none!important;animation:none!important}
+ .mobile-dock .dock-item:active{transform:none!important;animation:none!important}
+}
+.topbar{border-bottom:0!important;box-shadow:none!important;background:transparent!important}
+.topbar::before,.topbar::after{display:none!important}
+.topbar .mobile-brand,.topbar .search-wrap,.topbar .top-actions,.topbar .chat-top-name{border-radius:999px!important;position:relative}
+.topbar .mobile-brand::before,.topbar .search-wrap::before,.topbar .top-actions::before,.topbar .chat-top-name::before{content:none!important;display:none!important}
+.avatar{position:relative;overflow:hidden!important;display:grid;place-items:center;flex-shrink:0}
+.avatar img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center center!important;border-radius:inherit!important;margin:0!important;max-width:none!important;max-height:none!important}
+.profile-identity>.avatar,.viewed-profile-identity>.avatar,.profile-avatar-editor>.avatar{border-radius:50%!important;aspect-ratio:1/1!important;overflow:hidden!important;position:relative!important}
+.posts-list{width:100%}
