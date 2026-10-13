@@ -624,3 +624,25 @@ body:before{background:radial-gradient(ellipse at 16% 10%,rgba(117,54,160,.27),t
 .dock-active-pill{left:8px;right:auto;max-width:calc(100% - 16px);will-change:transform}
 .dock-active-pill.dragging{transform:translateX(var(--drag-x))!important;transition:none!important}
 .dock-active-pill:not(.dragging){transform:translateX(calc(var(--active-index)*100%))!important}
+
+/* Recovery: keep the mobile navigation dock fixed and visible above every page. */
+@media (max-width: 600px) {
+  .mobile-dock {
+    position: fixed !important;
+    left: 50% !important;
+    bottom: max(12px, env(safe-area-inset-bottom)) !important;
+    top: auto !important;
+    z-index: 999 !important;
+    display: flex !important;
+    width: min(292px, calc(100vw - 48px)) !important;
+    height: 52px !important;
+    transform: translateX(-50%) !important;
+    overflow: visible !important;
+    isolation: isolate !important;
+  }
+  .dock-active-pill {
+    max-width: none !important;
+    width: calc((100% - 6px) / 5) !important;
+    left: 3px !important;
+  }
+}
