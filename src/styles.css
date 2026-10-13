@@ -604,3 +604,23 @@ body:before{background:radial-gradient(ellipse at 16% 10%,rgba(117,54,160,.27),t
 .mood-note-list{display:flex!important;flex-direction:row!important;align-items:stretch;gap:12px;overflow-x:auto;overflow-y:hidden;width:100%;padding:2px 2px 12px;scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
 .mood-note-list>.vibe-drop-card{flex:0 0 104px;width:104px;min-width:104px;scroll-snap-align:start}
 .mood-note-list::-webkit-scrollbar{height:4px}.mood-note-list::-webkit-scrollbar-thumb{background:rgba(194,160,255,.22);border-radius:99px}
+
+/* Minimal branded session restore */
+.auth-loading{display:flex;min-height:100dvh;align-items:center;justify-content:center;flex-direction:column;gap:16px;background:#090711}
+.auth-loading-logo{width:68px;height:68px;object-fit:contain}
+.auth-loading-name{font-size:34px;letter-spacing:-1.8px;font-weight:850;color:#f8f3ff}
+.auth-loading-name span{color:#bc8cff}
+.auth-loading>span,.auth-loading-mark{display:none}
+/* Full-viewport messaging workspace */
+.messages-preview.real-messages{position:fixed;inset:0;z-index:20;min-height:100dvh;height:100dvh;width:100%;max-width:none;margin:0;padding:24px clamp(16px,4vw,56px) calc(100px + env(safe-area-inset-bottom));border:0;border-radius:0;overflow:hidden;display:flex;flex-direction:column;background:radial-gradient(ellipse at 20% 0%,rgba(126,79,181,.15),transparent 42%),#0b0912}
+.messages-preview.real-messages .messages-title{flex-shrink:0}
+.messages-preview.real-messages .people-results{flex:1;overflow:auto}
+.messages-preview.real-messages .chat-scroll{flex:1;max-height:none;min-height:0}
+.messages-preview.real-messages .chat-compose{flex-shrink:0}
+.messages-preview.real-messages .message-search{display:none!important}
+@media(max-width:700px){.messages-preview.real-messages{padding:18px 14px calc(88px + env(safe-area-inset-bottom))}}
+/* The nav pill must be clamped using its own width and the track's inner bounds. */
+.mobile-dock{position:relative;overflow:hidden;isolation:isolate}
+.dock-active-pill{left:8px;right:auto;max-width:calc(100% - 16px);will-change:transform}
+.dock-active-pill.dragging{transform:translateX(var(--drag-x))!important;transition:none!important}
+.dock-active-pill:not(.dragging){transform:translateX(calc(var(--active-index)*100%))!important}
