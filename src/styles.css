@@ -799,3 +799,12 @@ body:before{background:radial-gradient(ellipse at 16% 10%,rgba(117,54,160,.27),t
 .chat-open .main-content{height:100dvh!important;min-height:0!important;overflow:hidden!important}
 .chat-open .content-grid,.chat-open .feed-column{height:100%!important;min-height:0!important;overflow:hidden!important}
 .chat-open .messages-preview.real-messages{top:61px!important;bottom:0!important;height:auto!important;max-height:calc(100dvh - 61px)!important;overflow:hidden!important}
+
+
+/* Chat header fix: remove the page-sized layer behind the floating header pills. */
+html:has(.app-shell.chat-open),body:has(.app-shell.chat-open),body:has(.app-shell.chat-open) #root{height:100%;max-height:100dvh;overflow:hidden!important;overscroll-behavior:none!important}
+.app-shell.chat-open{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:0!important;max-height:100dvh!important;overflow:hidden!important;background:transparent!important}
+.chat-open .main-content,.chat-open .content-grid,.chat-open .feed-column,.chat-open .messages-preview.real-messages{background:transparent!important;background-color:transparent!important;background-image:none!important;border:0!important;box-shadow:none!important}
+.chat-open .main-content{position:fixed!important;inset:0!important;height:100dvh!important;max-height:100dvh!important;overflow:hidden!important}
+.chat-open .messages-preview.real-messages{position:fixed!important;top:61px!important;left:0!important;right:0!important;bottom:0!important;height:auto!important;max-height:none!important;min-height:0!important;overflow:hidden!important}
+.chat-open .mobile-footer{display:none!important}
