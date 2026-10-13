@@ -933,3 +933,12 @@ html.reduce-motion .search-wrap{backdrop-filter:none!important;-webkit-backdrop-
 /* Keep the Home branding pill geometrically centered in the top bar */
 .topbar>.search-wrap.brand-pill{position:absolute;left:50%;transform:translateX(-50%);flex:0 0 190px;width:190px;max-width:190px;justify-content:center;margin:0;}
 @media(max-width:700px){.topbar>.search-wrap.brand-pill{left:50%;width:clamp(130px,42vw,190px);max-width:190px;flex-basis:auto;}}
+
+
+/* Activity showcase metrics */
+.activity-showcase-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:8px 0 14px}
+.activity-showcase-grid>div{display:flex;flex-direction:column;gap:6px;padding:16px;border:1px solid var(--border);border-radius:15px;background:linear-gradient(135deg,rgba(190,145,255,.09),rgba(255,255,255,.025))}
+.activity-showcase-grid strong{font-size:25px;line-height:1;font-weight:850;letter-spacing:-.7px;color:var(--text)}
+.activity-showcase-grid span{font-size:11px;color:var(--muted,#a99fba)}
+.danger-zone .glass-input{margin:6px 0 12px}
+.danger-zone .danger-btn:disabled{opacity:.45;cursor:not-allowed}
