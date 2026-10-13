@@ -110,7 +110,7 @@ export default function App() {
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [settingsSection, setSettingsSection] = useState('menu');
-  const [activityStats, setActivityStats] = useState({posts:0,comments:0,reactions:0,saved:0});
+  const [activityItems, setActivityItems] = useState({posts:[],reacted:[],commented:[],saved:[]});
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
   const [deleteConfirmPassword, setDeleteConfirmPassword] = useState('');
   const [deletingAccount, setDeletingAccount] = useState(false);
@@ -132,14 +132,13 @@ export default function App() {
     if (settingsSection !== 'Your activity' || !authUser?.id || !isSupabaseConfigured) return;
     let cancelled = false;
     Promise.all([
-      supabase.from('posts').select('id',{count:'exact',head:true}).eq('author_id',authUser.id),
-      supabase.from('comments').select('id',{count:'exact',head:true}).eq('author_id',authUser.id),
-      supabase.from('reactions').select('post_id',{count:'exact',head:true}).eq('user_id',authUser.id),
-      supabase.from('saved_posts').select('post_id',{count:'exact',head:true}).eq('user_id',authUser.id)
-    ]).then(([posts,comments,reactions,saved]) => {
-      if (cancelled) return;
-      if ([posts,comments,reactions,saved].some(result => result.error)) return;
-      setActivityStats({posts:posts.count||0,comments:comments.count||0,reactions:reactions.count||0,saved:saved.count||0});
+      supabase.from('posts').select('id,caption,emoji,mood,created_at,image_url,image_urls,author_id').eq('author_id',authUser.id).order('created_at',{ascending:false}).limit(50),
+      supabase.from('reactions').select('created_at,post:posts(id,caption,emoji,mood,created_at,image_url,image_urls,author_id)').eq('user_id',authUser.id).order('created_at',{ascending:false}).limit(50),
+      supabase.from('comments').select('id,body,created_at,post:posts(id,caption,emoji,mood,created_at,image_url,image_urls,author_id)').eq('author_id',authUser.id).order('created_at',{ascending:false}).limit(50),
+      supabase.from('saved_posts').select('created_at,post:posts(id,caption,emoji,mood,created_at,image_url,image_urls,author_id)').eq('user_id',authUser.id).order('created_at',{ascending:false}).limit(50)
+    ]).then(([posts,reacted,commented,saved]) => {
+      if (cancelled || [posts,reacted,commented,saved].some(result => result.error)) return;
+      setActivityItems({posts:posts.data||[],reacted:(reacted.data||[]).filter(x=>x.post).map(x=>({...x.post,activity_at:x.created_at})),commented:(commented.data||[]).filter(x=>x.post).map(x=>({...x.post,activity_at:x.created_at,comment_body:x.body})),saved:(saved.data||[]).filter(x=>x.post).map(x=>({...x.post,activity_at:x.created_at}))});
     });
     return () => { cancelled = true; };
   }, [settingsSection, authUser?.id]);
