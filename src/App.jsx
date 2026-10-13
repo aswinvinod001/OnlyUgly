@@ -150,7 +150,7 @@ export default function App() {
         if(payload.eventType==='INSERT') setMessageRows(current=>current.some(m=>m.id===row.id)?current:[...current,row].sort((a,b)=>new Date(a.created_at)-new Date(b.created_at)));
         if(payload.eventType==='UPDATE') setMessageRows(current=>current.map(m=>m.id===row.id?row:m));
       }
-    }).on('postgres_changes',{event:'INSERT',schema:'public',table:'mood_notes'},payload=>{const row=payload.new;if(row&&new Date(row.expires_at).getTime()>Date.now())setMoodNotes(current=>[row,...current.filter(n=>n.id!==row.id)]);}).subscribe();
+    }).on('postgres_changes',{event:'*',schema:'public',table:'mood_notes'},payload=>{const row=payload.new||payload.old;if(!row)return;if(payload.eventType==='DELETE'){setMoodNotes(current=>current.filter(n=>n.id!==row.id));return;}if(new Date(row.expires_at).getTime()>Date.now())setMoodNotes(current=>[row,...current.filter(n=>n.id!==row.id&&n.user_id!==row.user_id)]);}).subscribe();
     const loadMood=async()=>{
       const {data,error}=await supabase.from('mood_notes').select('id,user_id,emoji,created_at,expires_at').gt('expires_at',new Date().toISOString()).order('created_at',{ascending:false}).limit(100);
       if(alive&&!error){setMoodNotes(data||[]);setMoodNote((data||[]).find(n=>n.user_id===authUser.id)||null);}
@@ -275,10 +275,15 @@ export default function App() {
   const publishMoodNote = async (emoji,duration=12) => {
     if(!authUser?.id||!isSupabaseConfigured){notify('Sign in to share a mood note.');return false;}
     const expiresAt=new Date(Date.now()+Math.min(24,Math.max(12,duration))*60*60*1000).toISOString();
-    const {data:existing,error:lookupError}=await supabase.from('mood_notes').select('id').eq('user_id',authUser.id).maybeSingle();if(lookupError){notify('Mood note lookup failed: '+lookupError.message);return false;}let result;if(existing?.id){result=await supabase.from('mood_notes').update({emoji,expires_at:expiresAt}).eq('id',existing.id).eq('user_id',authUser.id).select('id,user_id,emoji,created_at,expires_at').single();}else{result=await supabase.from('mood_notes').insert({user_id:authUser.id,emoji,expires_at:expiresAt}).select('id,user_id,emoji,created_at,expires_at').single();}const {data,error}=result;
+    // user_id is unique: upsert replaces the current note instead of racing into a duplicate-key error.
+    const {data,error}=await supabase.from('mood_notes').upsert(
+      {user_id:authUser.id,emoji,expires_at:expiresAt,created_at:new Date().toISOString()},
+      {onConflict:'user_id'}
+    ).select('id,user_id,emoji,created_at,expires_at').single();
     if(error){notify('Mood note failed: '+error.message);return false;}
-    setMoodNote(data);setMoodNotes(current=>[data,...current.filter(n=>n.user_id!==authUser.id)]);
-    notify('Your mood note is live!');
+    setMoodNote(data);
+    setMoodNotes(current=>[data,...current.filter(n=>n.user_id!==authUser.id)]);
+    notify('Your vibe emoji is live!');
     return true;
   };
   const addPost = async ({caption,mood,vibeEmoji,rating,files=[],imageUrls=[],autoSwipe=true,gravityEngine=false,gravityDirection='right',editingPost=null}) => {
