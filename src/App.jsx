@@ -129,6 +129,21 @@ export default function App() {
   const [viewedProfile, setViewedProfile] = useState(null);
   useEffect(() => { if (!isSupabaseConfigured) { setAuthReady(true); return; } let alive=true; supabase.auth.getSession().then(({data})=>{if(alive){setAuthUser(data.session?.user ?? null);setAuthReady(true);}}).catch(()=>{if(alive)setAuthReady(true);}); const {data:{subscription}}=supabase.auth.onAuthStateChange((_event,session)=>{setAuthUser(session?.user ?? null);setAuthReady(true);}); return ()=>{alive=false;subscription.unsubscribe();}; }, []);
   useEffect(() => {
+    if (settingsSection !== 'Your activity' || !authUser?.id || !isSupabaseConfigured) return;
+    let cancelled = false;
+    Promise.all([
+      supabase.from('posts').select('id',{count:'exact',head:true}).eq('author_id',authUser.id),
+      supabase.from('comments').select('id',{count:'exact',head:true}).eq('author_id',authUser.id),
+      supabase.from('reactions').select('post_id',{count:'exact',head:true}).eq('user_id',authUser.id),
+      supabase.from('saved_posts').select('post_id',{count:'exact',head:true}).eq('user_id',authUser.id)
+    ]).then(([posts,comments,reactions,saved]) => {
+      if (cancelled) return;
+      if ([posts,comments,reactions,saved].some(result => result.error)) return;
+      setActivityStats({posts:posts.count||0,comments:comments.count||0,reactions:reactions.count||0,saved:saved.count||0});
+    });
+    return () => { cancelled = true; };
+  }, [settingsSection, authUser?.id]);
+  useEffect(() => {
     if (!authUser?.id || !isSupabaseConfigured) return;
     let cancelled = false;
     supabase.from('profiles').select('display_name,username,bio,visibility,avatar_url').eq('id', authUser.id).maybeSingle().then(({data,error}) => {
